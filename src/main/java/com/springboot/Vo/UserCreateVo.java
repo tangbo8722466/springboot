@@ -14,10 +14,10 @@ public class UserCreateVo {
     @Length(min = 1, max = 32, message = "userName size limits from 1 to 32")
     private String userName;
     @NotNull(message = "account can not be empty!")
-    @Length(min = 8, max = 16, message = "userName size limits from 1 to 16")
+    @Length(min = 8, max = 16, message = "account size limits from 8 to 16")
     private String account;
     @NotNull(message = "password can not be empty!")
-    @Length(min = 1, max = 16, message = "userName size limits from 1 to 16")
+    @Length(min = 1, max = 16, message = "password size limits from 1 to 16")
     private String password;
     @NotNull(message = "remark can not be empty!")
     @Length(max = 256, message = "remark size limits 256 ")
