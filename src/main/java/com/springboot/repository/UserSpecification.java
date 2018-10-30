@@ -1,6 +1,6 @@
 package com.springboot.repository;
 
-import com.springboot.repository.entity.HelloEntity;
+import com.springboot.repository.entity.UserEntity;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.StringUtils;
 
@@ -14,18 +14,18 @@ import java.util.List;
 /**
  * Created by tangbo on 2018/2/1 0001.
  */
-public class HelloSpecification implements Specification<HelloEntity> {
-    private HelloEntity hello;
+public class UserSpecification implements Specification<UserEntity> {
+    private UserEntity userEntity;
 
-    public HelloSpecification(HelloEntity hello) {
-        this.hello = hello;
+    public UserSpecification(UserEntity userEntity) {
+        this.userEntity = userEntity;
     }
 
     @Override
-    public Predicate toPredicate(Root<HelloEntity> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+    public Predicate toPredicate(Root<UserEntity> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
         List<Predicate> list = new ArrayList<Predicate>();
-        if (!StringUtils.isEmpty(hello.getName())) {
-            list.add(criteriaBuilder.equal(root.get("name"), hello.getName()));
+        if (!StringUtils.isEmpty(userEntity.getUserName())) {
+            list.add(criteriaBuilder.equal(root.get("userName"), userEntity.getUserName()));
         }
         criteriaQuery.where(list.toArray(new Predicate[list.size()]));
         return null;

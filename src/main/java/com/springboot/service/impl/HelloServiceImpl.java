@@ -1,9 +1,9 @@
 package com.springboot.service.impl;
 
 import com.springboot.Utils.RestResult;
-import com.springboot.repository.Dao.HelloDao;
-import com.springboot.repository.HelloSpecification;
-import com.springboot.repository.entity.HelloEntity;
+import com.springboot.repository.Dao.UserDao;
+import com.springboot.repository.UserSpecification;
+import com.springboot.repository.entity.UserEntity;
 import com.springboot.service.HelloService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -25,29 +25,29 @@ import java.util.List;
 @Transactional
 public class HelloServiceImpl implements HelloService{
     @Autowired
-    HelloDao helloDao;
+    UserDao helloDao;
 
     @Override
-    public RestResult<HelloEntity> save(HelloEntity hello) {
-        HelloEntity result = (HelloEntity) helloDao.save(hello);
+    public RestResult<UserEntity> save(UserEntity hello) {
+        UserEntity result = (UserEntity) helloDao.save(hello);
         return new RestResult(RestResult.SUCCESS, null, result);
     }
 
     @Override
-    public RestResult<HelloEntity> update(HelloEntity hello) {
-        HelloEntity result = (HelloEntity) helloDao.saveAndFlush(hello);
+    public RestResult<UserEntity> update(UserEntity hello) {
+        UserEntity result = (UserEntity) helloDao.saveAndFlush(hello);
         return new RestResult(RestResult.SUCCESS, null, result);
     }
 
     @Override
-    public RestResult<HelloEntity> getById(Integer id) {
-        HelloEntity result = (HelloEntity) helloDao.findOne(id);
+    public RestResult<UserEntity> getById(Integer id) {
+        UserEntity result = (UserEntity) helloDao.findOne(id);
         return new RestResult(RestResult.SUCCESS, null, result);
     }
 
     @Override
-    public RestResult<List<HelloEntity>> list() {
-        List<HelloEntity> result = helloDao.findAll();
+    public RestResult<List<UserEntity>> list() {
+        List<UserEntity> result = helloDao.findAll();
         return new RestResult(RestResult.SUCCESS, null, result);
     }
 
@@ -58,16 +58,16 @@ public class HelloServiceImpl implements HelloService{
     }
 
     @Override
-    public RestResult<List<HelloEntity>> page(int start, int limit, String name) {
-        List<HelloEntity> list = new ArrayList<HelloEntity>();
-        HelloEntity hello = new HelloEntity();
+    public RestResult<List<UserEntity>> page(int start, int limit, String name) {
+        List<UserEntity> list = new ArrayList<UserEntity>();
+        UserEntity userEntity = new UserEntity();
         if(!StringUtils.isEmpty(name)){
-            hello.setName(name);
+            userEntity.setUserName(name);
         }
         Sort sort = new Sort(Sort.Direction.DESC, "id");
-        Pageable pageable = new PageRequest(start, limit, sort);
-        Page<HelloEntity> page = helloDao.findAll(new HelloSpecification(hello), pageable);
-        Iterator<HelloEntity> iterable = page.iterator();
+        Pageable pageable = new PageRequest(start - 1, limit, sort);
+        Page<UserEntity> page = helloDao.findAll(new UserSpecification(userEntity), pageable);
+        Iterator<UserEntity> iterable = page.iterator();
         while(iterable.hasNext()){
             list.add(iterable.next());
         }
