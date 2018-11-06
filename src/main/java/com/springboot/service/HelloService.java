@@ -14,5 +14,5 @@ public interface HelloService {
     RestResult<UserEntity> getById(Long id);
     RestResult<List<UserEntity>> list();
     RestResult delete(Long id);
-    RestResult<List<UserEntity>> page(int start, int limit, String name);
+    RestResult<List<UserEntity>> page(Integer pageNumber, Integer pageSize, String name);
 }

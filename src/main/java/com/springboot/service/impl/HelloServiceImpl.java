@@ -1,6 +1,8 @@
 package com.springboot.service.impl;
 
+import com.springboot.Utils.PageInfo;
 import com.springboot.Utils.RestResult;
+import com.springboot.Utils.RestResultStatusEnum;
 import com.springboot.repository.Dao.UserDao;
 import com.springboot.repository.UserSpecification;
 import com.springboot.repository.entity.UserEntity;
@@ -30,47 +32,48 @@ public class HelloServiceImpl implements HelloService{
     @Override
     public RestResult<UserEntity> save(UserEntity hello) {
         UserEntity result = (UserEntity) helloDao.save(hello);
-        return new RestResult(RestResult.SUCCESS, null, result);
+        return new RestResult(RestResultStatusEnum.SUCCESS.value(), null, result);
     }
 
     @Override
     public RestResult<UserEntity> update(UserEntity hello) {
         UserEntity result = (UserEntity) helloDao.saveAndFlush(hello);
-        return new RestResult(RestResult.SUCCESS, null, result);
+        return new RestResult(RestResultStatusEnum.SUCCESS.value(), null, result);
     }
 
     @Override
     public RestResult<UserEntity> getById(Long id) {
         UserEntity result = (UserEntity) helloDao.findOne(id);
-        return new RestResult(RestResult.SUCCESS, null, result);
+        return new RestResult(RestResultStatusEnum.SUCCESS.value(), null, result);
     }
 
     @Override
     public RestResult<List<UserEntity>> list() {
         List<UserEntity> result = helloDao.findAll();
-        return new RestResult(RestResult.SUCCESS, null, result);
+        return new RestResult(RestResultStatusEnum.SUCCESS.value(), null, result);
     }
 
     @Override
     public RestResult delete(Long id) {
         helloDao.delete(id);
-        return new RestResult(RestResult.SUCCESS, null);
+        return new RestResult(RestResultStatusEnum.SUCCESS.value(), null);
     }
 
     @Override
-    public RestResult<List<UserEntity>> page(int start, int limit, String name) {
+    public RestResult<List<UserEntity>> page(Integer pageNumber, Integer pageSize, String name) {
         List<UserEntity> list = new ArrayList<UserEntity>();
         UserEntity userEntity = new UserEntity();
         if(!StringUtils.isEmpty(name)){
             userEntity.setUserName(name);
         }
         Sort sort = new Sort(Sort.Direction.DESC, "id");
-        Pageable pageable = new PageRequest(start - 1, limit, sort);
+        Pageable pageable = new PageRequest(pageNumber - 1, pageSize, sort);
         Page<UserEntity> page = helloDao.findAll(new UserSpecification(userEntity), pageable);
+        PageInfo pageInfo = new PageInfo(pageNumber, pageSize, page.getTotalElements());
         Iterator<UserEntity> iterable = page.iterator();
         while(iterable.hasNext()){
             list.add(iterable.next());
         }
-        return new RestResult(RestResult.SUCCESS, null, list);
+        return new RestResult(RestResultStatusEnum.SUCCESS.value(), null, pageInfo, list);
     }
 }

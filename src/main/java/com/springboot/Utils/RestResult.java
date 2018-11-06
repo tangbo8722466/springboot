@@ -1,52 +1,29 @@
 package com.springboot.Utils;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 /**
  * Created by tangbo on 2018/1/30 0030.
  */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class RestResult<T> {
-    public static final int SUCCESS = 200;
-    public static final int FAIL = -1;
-    int code;
+    private String status;
+    private String errorMsg;
+    private PageInfo pageInfo;
+    private T data;
 
-    String errorMsg;
-
-    T data;
-
-    public RestResult() {
-    }
-
-    public RestResult(int code, String errorMsg) {
-        this.code = code;
+    public RestResult(String status, String errorMsg) {
+        this.status = status;
         this.errorMsg = errorMsg;
     }
 
-    public RestResult(int code, String errorMsg, T data) {
-        this.code = code;
+    public RestResult(String status, String errorMsg, T data) {
+        this.status = status;
         this.errorMsg = errorMsg;
-        this.data = data;
-    }
-
-    public int getCode() {
-        return code;
-    }
-
-    public void setCode(int code) {
-        this.code = code;
-    }
-
-    public String getErrorMsg() {
-        return errorMsg;
-    }
-
-    public void setErrorMsg(String errorMsg) {
-        this.errorMsg = errorMsg;
-    }
-
-    public T getData() {
-        return data;
-    }
-
-    public void setData(T data) {
         this.data = data;
     }
 }

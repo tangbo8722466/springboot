@@ -1,6 +1,7 @@
 package com.springboot.handler;
 
 import com.springboot.Utils.RestResult;
+import com.springboot.Utils.RestResultStatusEnum;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,12 +15,12 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     @ResponseBody
     public RestResult handlerException(RuntimeException ex){
-        return new RestResult(RestResult.FAIL, ex.getMessage());
+        return new RestResult(RestResultStatusEnum.EXCEPTION.value(), ex.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseBody
     public RestResult handlerVaildException(MethodArgumentNotValidException ex){
-        return new RestResult(RestResult.FAIL, ex.getBindingResult().getFieldError().getDefaultMessage().toString());
+        return new RestResult(RestResultStatusEnum.EXCEPTION.value(), ex.getBindingResult().getFieldError().getDefaultMessage().toString());
     }
 }

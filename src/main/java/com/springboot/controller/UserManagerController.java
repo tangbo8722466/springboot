@@ -1,6 +1,7 @@
 package com.springboot.controller;
 
 import com.springboot.Utils.RestResult;
+import com.springboot.Utils.RestResultStatusEnum;
 import com.springboot.Utils.ShareMethodUtils;
 import com.springboot.Utils.UserDefine;
 import com.springboot.Vo.UserCreateVo;
@@ -54,12 +55,12 @@ public class UserManagerController {
     @RequestMapping(value = "/user/{id}",  method = RequestMethod.PUT)
     RestResult<UserEntity> update(@PathVariable("id") Long id, @RequestBody UserUpdateVo userUpdateVo) throws IllegalAccessException {
         if ( ObjectUtils.isEmpty(userUpdateVo) || ShareMethodUtils.checkAllObjFieldIsNull(userUpdateVo) ){
-            return new RestResult(RestResult.FAIL, "there is no things to update!");
+            return new RestResult(RestResultStatusEnum.FAIL.value(), "there is no things to update!");
         }
 
         UserEntity entity = helloDao.findOne(id);
         if ( null == entity ) {
-            return new RestResult(RestResult.FAIL, "the user entity dose not exits!");
+            return new RestResult(RestResultStatusEnum.FAIL.value(), "the user entity dose not exits!");
         }
 
         if ( !StringUtils.isEmpty(userUpdateVo.getUserName()) ) {
@@ -92,13 +93,13 @@ public class UserManagerController {
     }
 
     @RequestMapping(value = "/user/page",  method = RequestMethod.GET)
-    RestResult page(@RequestParam("int") int start, @RequestParam("limit") int limit, @RequestParam(name = "name", required = false) String name) {
-        return helloService.page(start, limit, name);
+    RestResult page(@RequestParam("pageNumber") Integer pageNumber, @RequestParam("pageSize") Integer pageSize, @RequestParam(name = "name", required = false) String name) {
+        return helloService.page(pageNumber, pageSize, name);
     }
 
     @RequestMapping(value = "/user/userdefine",  method = RequestMethod.GET)
     RestResult userdefine() {
-        return new RestResult(RestResult.SUCCESS, null, userDefine.getName()+","+userDefine.getPasswd()+","+msg);
+        return new RestResult(RestResultStatusEnum.SUCCESS.value(), null, userDefine.getName()+","+userDefine.getPasswd()+","+msg);
     }
 
 }
