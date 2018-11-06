@@ -40,7 +40,7 @@ public class HelloServiceImpl implements HelloService{
     }
 
     @Override
-    public RestResult<UserEntity> getById(Integer id) {
+    public RestResult<UserEntity> getById(Long id) {
         UserEntity result = (UserEntity) helloDao.findOne(id);
         return new RestResult(RestResult.SUCCESS, null, result);
     }
@@ -52,7 +52,7 @@ public class HelloServiceImpl implements HelloService{
     }
 
     @Override
-    public RestResult delete(Integer id) {
+    public RestResult delete(Long id) {
         helloDao.delete(id);
         return new RestResult(RestResult.SUCCESS, null);
     }

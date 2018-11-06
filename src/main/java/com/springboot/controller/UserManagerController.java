@@ -1,18 +1,24 @@
 package com.springboot.controller;
 
 import com.springboot.Utils.RestResult;
+import com.springboot.Utils.ShareMethodUtils;
 import com.springboot.Utils.UserDefine;
 import com.springboot.Vo.UserCreateVo;
 import com.springboot.Vo.UserUpdateVo;
+import com.springboot.repository.Dao.UserDao;
 import com.springboot.repository.entity.UserEntity;
 import com.springboot.service.HelloService;
 import io.swagger.annotations.Api;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import sun.invoke.empty.Empty;
 
 import javax.validation.Valid;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -25,6 +31,9 @@ public class UserManagerController {
 
     @Autowired
     HelloService helloService;
+
+    @Autowired
+    UserDao helloDao;
 
     @Autowired
     UserDefine userDefine;
@@ -43,8 +52,28 @@ public class UserManagerController {
     }
 
     @RequestMapping(value = "/user/{id}",  method = RequestMethod.PUT)
-    RestResult<UserEntity> update(@PathVariable("id") Integer id, @RequestBody UserUpdateVo userUpdateVo) {
-        return helloService.update(new UserEntity().builder().id(id).userName(userUpdateVo.getUserName()).account(userUpdateVo.getAccount()).password(userUpdateVo.getPassword()).remark(userUpdateVo.getRemark()).build());
+    RestResult<UserEntity> update(@PathVariable("id") Long id, @RequestBody UserUpdateVo userUpdateVo) throws IllegalAccessException {
+        if ( ObjectUtils.isEmpty(userUpdateVo) || ShareMethodUtils.checkAllObjFieldIsNull(userUpdateVo) ){
+            return new RestResult(RestResult.FAIL, "there is no things to update!");
+        }
+
+        UserEntity entity = helloDao.findOne(id);
+        if ( null == entity ) {
+            return new RestResult(RestResult.FAIL, "the user entity dose not exits!");
+        }
+
+        if ( !StringUtils.isEmpty(userUpdateVo.getUserName()) ) {
+            entity.setUserName(userUpdateVo.getUserName());
+        }
+
+        if ( !StringUtils.isEmpty(userUpdateVo.getPassword()) ) {
+            entity.setPassword(userUpdateVo.getPassword());
+        }
+
+        if ( userUpdateVo.getRemark() != null ) {
+            entity.setRemark(userUpdateVo.getRemark());
+        }
+        return helloService.update(entity);
     }
 
     @RequestMapping(value = "/user",  method = RequestMethod.GET)
@@ -53,12 +82,12 @@ public class UserManagerController {
     }
 
     @RequestMapping(value = "/user/{id}",  method = RequestMethod.GET)
-    RestResult<UserEntity> getById(@PathVariable("id") Integer id) {
+    RestResult<UserEntity> getById(@PathVariable("id") Long id) {
         return helloService.getById(id);
     }
 
     @RequestMapping(value = "/user/{id}",  method = RequestMethod.DELETE)
-    RestResult delete(@PathVariable("id") Integer id) {
+    RestResult delete(@PathVariable("id") Long id) {
         return helloService.delete(id);
     }
 

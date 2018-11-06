@@ -15,7 +15,7 @@ import javax.persistence.*;
 public class UserEntity {
     @Id
     @GeneratedValue
-    private Integer id;
+    private Long id;
 
     @Column(name = "user_name", length = 32, nullable = false)
     private String userName;
@@ -26,6 +26,6 @@ public class UserEntity {
     @Column(name = "password", length = 16, nullable = false)
     private String password;
 
-    @Column(name = "remark", length = 256, nullable = false)
+    @Column(name = "remark", length = 256)
     private String remark;
 }

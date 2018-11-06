@@ -11,8 +11,8 @@ import java.util.List;
 public interface HelloService {
     RestResult<UserEntity> save(UserEntity hello);
     RestResult<UserEntity> update(UserEntity hello);
-    RestResult<UserEntity> getById(Integer id);
+    RestResult<UserEntity> getById(Long id);
     RestResult<List<UserEntity>> list();
-    RestResult delete(Integer id);
+    RestResult delete(Long id);
     RestResult<List<UserEntity>> page(int start, int limit, String name);
 }
