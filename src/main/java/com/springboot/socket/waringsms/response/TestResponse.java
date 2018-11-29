@@ -1,12 +1,16 @@
 package com.springboot.socket.waringsms.response;
 
-import com.springboot.socket.waringsms.utils.JaxbUtil;
+
+import com.nsfocus.sms.utils.JaxbUtil;
 import org.springframework.util.StringUtils;
 
 public class TestResponse {
     public static void main(String[] args) {
-        System.out.println(objectToXml());
-        System.out.println(xmlToObject(null).toString());
+//        System.out.println(objectToXml());
+//        System.out.println(xmlToObject(null).toString());
+        String notice = "1100";
+        System.out.println(notice.substring(0,1).equalsIgnoreCase("1"));
+        System.out.println(notice.substring(1,2).equalsIgnoreCase("1"));
     }
 
     public static String objectToXml() {

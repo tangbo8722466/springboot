@@ -16,7 +16,7 @@ import javax.xml.bind.annotation.XmlType;
 @AllArgsConstructor
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder={"txnNo","mblNo","msgCntntInf"})
-public class Body {
+public class ResqBody {
     @XmlElement(name = "TxnNo")
     private String txnNo;
     @XmlElement(name = "MblNo")
@@ -26,7 +26,7 @@ public class Body {
 
     @Override
     public String toString() {
-        return "Body{" +
+        return "ResqBody{" +
                 "txnNo='" + txnNo + '\'' +
                 ", mblNo='" + mblNo + '\'' +
                 ", msgCntntInf='" + msgCntntInf + '\'' +

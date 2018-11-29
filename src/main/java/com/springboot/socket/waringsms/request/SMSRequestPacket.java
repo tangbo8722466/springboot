@@ -18,11 +18,11 @@ public class SMSRequestPacket {
     @XmlAttribute(name = "version")
     private String version;
     @XmlElement(name = "SYS_HEAD")
-    private SysHead sysHead;
+    private ResqSysHead sysHead;
     @XmlElement(name = "APP_HEAD")
     private AppHead appHead;
     @XmlElement(name = "BODY")
-    private Body body;
+    private ResqBody body;
 
     @Override
     public String toString() {

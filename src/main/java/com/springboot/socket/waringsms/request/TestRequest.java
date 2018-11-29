@@ -1,6 +1,6 @@
 package com.springboot.socket.waringsms.request;
 
-import com.springboot.socket.waringsms.utils.JaxbUtil;
+import com.nsfocus.sms.utils.JaxbUtil;
 import org.springframework.util.StringUtils;
 
 public class TestRequest {
@@ -74,7 +74,6 @@ public class TestRequest {
                     "</service>";
         }
         SMSRequestPacket smsRequestPacket = JaxbUtil.converyToJavaBean(xml, SMSRequestPacket.class);
-        System.out.println(smsRequestPacket);
         return smsRequestPacket;
     }
 }

@@ -17,7 +17,7 @@ import javax.xml.bind.annotation.*;
 @XmlType(propOrder={"sysHead"})
 public class SMSResponsePacket{
     @XmlElement(name = "SYS_HEAD")
-    private SysHead sysHead;
+    private RespSysHead sysHead;
 
     @Override
     public String toString() {

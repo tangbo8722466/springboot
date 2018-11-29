@@ -15,7 +15,7 @@ import java.util.List;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder = {"serviceCode","serviceScene","consumerId","orgConsumerId","consumerSeqNo","orgConsumerSeqNo",
        "tranDate","tranTime","returnStatus","result"})
-public class SysHead {
+public class RespSysHead {
     @XmlElement(name = "ServiceCode")
     private String serviceCode;
     @XmlElement(name = "ServiceScene")
@@ -40,7 +40,7 @@ public class SysHead {
 
     @Override
     public String toString() {
-        return "SysHead{" +
+        return "ResqSysHead{" +
                 "serviceCode='" + serviceCode + '\'' +
                 ", serviceScene='" + serviceScene + '\'' +
                 ", consumerId='" + consumerId + '\'' +

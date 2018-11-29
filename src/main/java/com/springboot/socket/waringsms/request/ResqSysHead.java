@@ -18,7 +18,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(propOrder = {"serviceCode","serviceScene","consumerId","orgConsumerId","systemId","consumerSeqNo","orgConsumerSeqNo",
         "servSeqNo","terminalCode","orgTerminalCode","consumerSvrId","orgConsumerSvrId","destSvrId","tranMode","hstDate",
         "hstTime","tranDate","tranTime","userLang"})
-public class SysHead {
+public class ResqSysHead {
     @XmlElement(name = "ServiceCode")
     private String serviceCode;
     @XmlElement(name = "ServiceScene")
@@ -60,7 +60,7 @@ public class SysHead {
 
     @Override
     public String toString() {
-        return "SysHead{" +
+        return "ResqSysHead{" +
                 "serviceCode='" + serviceCode + '\'' +
                 ", serviceScene='" + serviceScene + '\'' +
                 ", consumerId='" + consumerId + '\'' +
