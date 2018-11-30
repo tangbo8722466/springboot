@@ -1,8 +1,8 @@
 package com.springboot.socket.waringsms.service;
 
-import com.nsfocus.sms.response.Result;
-import com.nsfocus.sms.response.SMSResponsePacket;
-import com.nsfocus.sms.utils.JaxbUtil;
+import com.springboot.socket.waringsms.response.Result;
+import com.springboot.socket.waringsms.response.SMSResponsePacket;
+import com.springboot.socket.waringsms.utils.JaxbUtil;
 
 import java.io.IOException;
 import java.io.InputStream;

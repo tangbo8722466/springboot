@@ -1,7 +1,7 @@
 package com.springboot.socket.waringsms.response;
 
 
-import com.nsfocus.sms.utils.JaxbUtil;
+import com.springboot.socket.waringsms.utils.JaxbUtil;
 import org.springframework.util.StringUtils;
 
 public class TestResponse {

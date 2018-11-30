@@ -1,9 +1,9 @@
 package com.springboot.socket.waringsms.service;
 
-import com.nsfocus.sms.request.ResqBody;
-import com.nsfocus.sms.request.SMSRequestPacket;
-import com.nsfocus.sms.request.TestRequest;
-import com.nsfocus.sms.response.TestResponse;
+import com.springboot.socket.waringsms.request.ResqBody;
+import com.springboot.socket.waringsms.request.SMSRequestPacket;
+import com.springboot.socket.waringsms.request.TestRequest;
+import com.springboot.socket.waringsms.response.TestResponse;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.IOException;

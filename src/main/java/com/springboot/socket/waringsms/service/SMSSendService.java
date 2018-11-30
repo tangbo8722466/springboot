@@ -1,12 +1,11 @@
 package com.springboot.socket.waringsms.service;
 
 
-import com.nsfocus.consts.ErrorConst;
-import com.nsfocus.inter.configuration.IConfigurationService;
-import com.nsfocus.sms.response.Result;
-import com.nsfocus.sms.response.SMSResponsePacket;
-import com.nsfocus.sms.utils.JaxbUtil;
-import com.nsfocus.sms.vo.SmsBodyVO;
+import com.springboot.socket.waringsms.request.*;
+import com.springboot.socket.waringsms.response.Result;
+import com.springboot.socket.waringsms.response.SMSResponsePacket;
+import com.springboot.socket.waringsms.utils.JaxbUtil;
+import com.springboot.socket.waringsms.vo.SmsBodyVO;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -129,26 +128,16 @@ public class SMSSendService {
         this.smsPort = smsPort;
     }
 
-    private IConfigurationService iConfigService;
-
-    public IConfigurationService getiConfigService() {
-        return iConfigService;
-    }
-
-    public void setiConfigService(IConfigurationService iConfigService) {
-        this.iConfigService = iConfigService;
-    }
-
     private Logger logger = LoggerFactory.getLogger(SMSSendService.class);
 
-    public ErrorConst sendSMSwarning(List<SmsBodyVO> smsBodyVOList){
+    public void sendSMSwarning(List<SmsBodyVO> smsBodyVOList){
         Socket socket = null;
         boolean isSendSmsSuccess = false;
         try {
             socket = this.init();
             if (socket == null) {
                 logger.error("connect the sms server failed !");
-                return ErrorConst.ERROR_CONNECT_SMSSERVER_FAILED;
+                return;
             }
             //给服务端发送响应信息
             InputStream is = socket.getInputStream();
@@ -184,14 +173,14 @@ public class SMSSendService {
             os.close();
             if (isSendSmsSuccess) {
                 logger.info("send warning sms success !");
-                return ErrorConst.INFO_SEND_SMS_SUCCESS;
+                return;
             }
             logger.info("send warning sms failed !");
-            return ErrorConst.ERROR_SEND_SMS_FAILED;
+            return;
 
         } catch (IOException e) {
             e.printStackTrace();
-            return ErrorConst.ERROR_SEND_SMS_FAILED;
+            return;
         }
         finally {
             this.smsHost = null;
@@ -208,21 +197,6 @@ public class SMSSendService {
 
     public Socket init(){
         try {
-            if (StringUtils.isEmpty(this.smsHost) || this.smsPort == null) {
-                if (iConfigService == null) {
-                    logger.error("ruledispose: postgres config instance is null");
-                    return null;
-                }
-
-                this.smsHost = iConfigService.getValue("notify", "0", "smsHost");
-                if (smsHost == null) {
-                    logger.error("ruledispose: sms configuration not found");
-                    return null;
-                }
-                this.smsPort = Integer.parseInt(iConfigService.getValue("notify", "0", "smsPort"));
-
-                logger.info("ruledispose: init sms service sms[" + this.smsHost + "/" + this.smsPort + "]");
-            }
             //对服务端发起连接请求
             Socket socket = new Socket();
             socket.connect(new InetSocketAddress(this.smsHost, this.smsPort), 5000);
