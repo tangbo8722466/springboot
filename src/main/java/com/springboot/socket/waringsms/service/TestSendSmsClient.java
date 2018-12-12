@@ -1,5 +1,6 @@
 package com.springboot.socket.waringsms.service;
 
+
 import com.springboot.socket.waringsms.response.Result;
 import com.springboot.socket.waringsms.response.SMSResponsePacket;
 import com.springboot.socket.waringsms.utils.JaxbUtil;
@@ -13,9 +14,11 @@ import java.nio.charset.Charset;
 
 public class TestSendSmsClient {
     public static void main(String[] args) {
-        String smsHost = "128.160.12.216";
-        Integer smsPort = 9171;
-        String requestXml="<?xml version=\"1.0\" encoding=\"UTF-8\"?><service version=\"2.0\"><SYS_HEAD><ServiceCode>12002000004</ServiceCode><ServiceScene>01</ServiceScene><ConsumerId>118001</ConsumerId><OrgConsumerId>118001</OrgConsumerId><SystemId>1</SystemId><ConsumerSeqNo>11800120181128ESPC014434664</ConsumerSeqNo><OrgConsumerSeqNo>11800120181128ESPC114434664</OrgConsumerSeqNo><ServSeqNo></ServSeqNo><TerminalCode></TerminalCode><OrgTerminalCode></OrgTerminalCode><ConsumerSvrId></ConsumerSvrId><OrgConsumerSvrId></OrgConsumerSvrId><DestSvrId></DestSvrId><TranMode>ONLINE</TranMode><HstDate></HstDate><HstTime></HstTime><TranDate>2018112</TranDate><TranTime>14434</TranTime><UserLang></UserLang></SYS_HEAD><APP_HEAD><TranTellerNo></TranTellerNo><TranBranchId></TranBranchId><TranTellerPassword></TranTellerPassword><TranTellerLevel></TranTellerLevel><TranTellerType></TranTellerType><ApprFlag></ApprFlag><array><ApprTellerArray><ApprTellerNo></ApprTellerNo><ApprBranchId></ApprBranchId><ApprTellerLevel></ApprTellerLevel><ApprTellerType></ApprTellerType><AuthFlag></AuthFlag></ApprTellerArray></array><array><AuthTellerInfo><AuthTellerNo></AuthTellerNo><AuthBranchId></AuthBranchId><AuthTellerPassword></AuthTellerPassword><AuthTellerLevel></AuthTellerLevel><AuthTellerType></AuthTellerType></AuthTellerInfo></array></APP_HEAD><BODY><TxnNo>820001</TxnNo><MblNo>15196635394</MblNo><MsgCntntInf>this is a test msg</MsgCntntInf></BODY></service>";
+        String smsHost = args[0];
+        Integer smsPort = Integer.parseInt(args[1]);
+        String requestXml="<?xml version=\"1.0\" encoding=\"UTF-8\"?><service version=\"2.0\"><SYS_HEAD><ServiceCode>12002000004</ServiceCode><ServiceScene>01</ServiceScene><ConsumerId>118001</ConsumerId><OrgConsumerId>118001</OrgConsumerId><SystemId>1</SystemId><ConsumerSeqNo>11800120181128ESPC014434664</ConsumerSeqNo><OrgConsumerSeqNo>11800120181128ESPC114434664</OrgConsumerSeqNo><ServSeqNo></ServSeqNo><TerminalCode></TerminalCode><OrgTerminalCode></OrgTerminalCode><ConsumerSvrId></ConsumerSvrId><OrgConsumerSvrId></OrgConsumerSvrId><DestSvrId></DestSvrId><TranMode>ONLINE</TranMode><HstDate></HstDate><HstTime></HstTime><TranDate>2018112</TranDate><TranTime>14434</TranTime><UserLang></UserLang></SYS_HEAD><APP_HEAD><TranTellerNo></TranTellerNo><TranBranchId></TranBranchId><TranTellerPassword></TranTellerPassword><TranTellerLevel></TranTellerLevel><TranTellerType></TranTellerType><ApprFlag></ApprFlag><array><ApprTellerArray><ApprTellerNo></ApprTellerNo><ApprBranchId></ApprBranchId><ApprTellerLevel></ApprTellerLevel><ApprTellerType></ApprTellerType><AuthFlag></AuthFlag></ApprTellerArray></array><array><AuthTellerInfo><AuthTellerNo></AuthTellerNo><AuthBranchId></AuthBranchId><AuthTellerPassword></AuthTellerPassword><AuthTellerLevel></AuthTellerLevel><AuthTellerType></AuthTellerType></AuthTellerInfo></array></APP_HEAD><BODY><TxnNo>820001</TxnNo><SvcCd>8100</SvcCd><MblNo>mobileNoList</MblNo><MsgCntntInf>this is a test msg</MsgCntntInf></BODY></service>";
+        String mobileNo = args[2];
+        requestXml = requestXml.replace("mobileNoList",mobileNo);
         Socket socket = null;
         try{
             socket = new Socket();
