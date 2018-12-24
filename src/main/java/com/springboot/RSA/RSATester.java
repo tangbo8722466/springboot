@@ -75,19 +75,29 @@ public class RSATester {
      */
 
     static void testJavaRsa() {
-        String PUBLICKEY = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCv2Jrtljrs6YdNk0CwmxmdKRVTSKQKmMeBXdaZ1VtnnTwrqLm+e0lGSwe2Q5ZLY6uBiL9etQlmKEEIU01LJWa39J5vQePkKxS5Ka89wIQ44JjCx1IblmbBX9HAEywLVugdC/yV0MyhRQpteOBLHfkM+TKjn9KWfN3F+oUOQkcDKwIDAQAB";
-        String PRIVATEKEY = "MIICeAIBADANBgkqhkiG9w0BAQEFAASCAmIwggJeAgEAAoGBAK/Ymu2WOuzph02TQLCbGZ0pFVNIpAqYx4Fd1pnVW2edPCuoub57SUZLB7ZDlktjq4GIv161CWYoQQhTTUslZrf0nm9B4+QrFLkprz3AhDjgmMLHUhuWZsFf0cATLAtW6B0L/JXQzKFFCm144Esd+Qz5MqOf0pZ83cX6hQ5CRwMrAgMBAAECgYEAnCr3NMd1349qbXe4POAR+GRTHxrlLNAQZpDLFOXJ/pRCqtd21ncxVS8vUyxlHuEOoMSsiFSpW0OmtdkdTP6TYJEgkYsad6XgQeX8yaWWGsaCQH5+fmoTqMR9/Yf5Ve4O7lmD5PApRDgu5TJkQgAMb82GwJTej/WGulwhoiFL4aECQQD1HdrXtgqRQgWFolVK/TA5c57FWRsU2y85FwcaD8hOlBoOcNDXeAgIZKpdwo/4r5iJS0Zu4Gzh2YulPnul05UxAkEAt6dhJOHdRsOcn3f62N7s57WEoOHpKUX+SiaX2nICUTFR2OtgHBBPz/0smsp1deGa2ley2yeQcbDHDTv9L0T3GwJAZ9COOKBsV1tcFV5Mu6cCfsK+cx0rQCkZFhfvtRUMJGPLqWQUv72hwVRJZ86YxZ4xf6y3FwzMcNd/sqwFGJXFcQJBALDCm6Ao95VVTli53KiBHxkAvw8tgAEmidIKhRtNoedNhc429QDtvjOcJCMze4wiwK0nvVBrKv4Ru/OD6nJleUMCQQCi5SXDs34Xb406fWWypTNPFyqAm4h7RIl73BX2oSgFlMqDNRmlcqSDUxQ3OkAFioI8nkwGREBSDzKBhU4LGF4+";
-
+        String PUBLICKEY = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCw9D5cEu39diXUoSCQIf3MU5XHTHNzO2zKlHiR\n" +
+                "Nl6Y5weLpaEdzX14KKF+9NnJXELQDa33Htc178etYbck2MGV/o0T8Fivb9yjBvtWprLZjV7Mqyu5\n" +
+                "2fHRmGRYMQ/g4nTUwcoeob919iUk+4tqXGnj/kePoItkgCHFgxUlGIusyQIDAQAB";
+        String PRIVATEKEY = "MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBALD0PlwS7f12JdShIJAh/cxTlcdM\n" +
+                "c3M7bMqUeJE2XpjnB4uloR3NfXgooX702clcQtANrfce1zXvx61htyTYwZX+jRPwWK9v3KMG+1am\n" +
+                "stmNXsyrK7nZ8dGYZFgxD+DidNTByh6hv3X2JST7i2pcaeP+R4+gi2SAIcWDFSUYi6zJAgMBAAEC\n" +
+                "gYBzAlvhdgAuY3LVDuBeLWmKOq03em3y8CWWSQdPwhmboVSbI8xi1WL+DNJh9Hv0Tr2yAaIW4nmX\n" +
+                "ub965e6lySeP48hl0SbquCKnETkst4UCdMHMv9hBaLTuvK/JbBodXQFKNgCvXpmMrR+yArP44346\n" +
+                "UacIW1ESmY0SScKRUPSCvQJBANkNwE8h0yArOPP9yXNswt2WarPI8/UuJpl19Om1HR4sekI6glSy\n" +
+                "SvOL/XMxJ/0d74bD3+F6D2G495AvHFL1r08CQQDQtIlVKHw3MAioRImDDa2STTuYEls+pKvVYVkn\n" +
+                "AtDyNr+nBh2IytInIaMJpdnGmPajIKbwgRERmQxpqjipwpxnAkBjECKgOyjXusJgoYjK9G2vopIK\n" +
+                "ggHN+gVF7w8bhzzF47jc90U6kLEinNbNNzcwD/SdRlKs3v+cM0ZR+R5tQpKDAkBzQ7IxUQnBZQry\n" +
+                "+99CfPRmv7bxFvpDz6iDUZ9uVzTVAP26HjuDiBimugIUWv+6mlJk56yrWWz23iMn3HYs86lzAkEA\n" +
+                "m37xhtWa4a761JqrV5x3pbznBP1SxToLa1c5JEpfD2TzQ0YapO7iS9cpLm60SHmCc/9GqsaWvW01\n" +
+                "CKEkOSonog==";
         try {
-            Map<String, Object> keyPair = RSAUtils.genKeyPair();
-//             PUBLICKEY = RSAUtils.getPublicKey(keyPair);
-//             PRIVATEKEY = RSAUtils.getPrivateKey(keyPair);
+            //Map<String, Object> keyPair = RSAUtils.genKeyPair();
+//            String PUBLICKEY = RSAUtils.getPublicKey(keyPair);
+//            String  PRIVATEKEY = RSAUtils.getPrivateKey(keyPair);
             String data = "admin123";
             data = RSAUtils.encryptedDataOnJava(data, PUBLICKEY);
             System.out.println("加密数据：" + data);
-            String test = "pa60wSjq/WKMEvTrTMiB6BeoviWFiujbZwpfLcx2CHm5q4Tol8hE6kcJaxBlXNVuwZk3wIHHeNM0";
             System.out.println("解密数据：" + RSAUtils.decryptDataOnJava(data, PRIVATEKEY));
-            System.out.println("解密数据test：" + RSAUtils.decryptDataOnJava(data, PRIVATEKEY));
         } catch (Exception e) {
             e.printStackTrace();
         }
