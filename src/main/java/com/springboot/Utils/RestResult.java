@@ -4,13 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 /**
  * Created by tangbo on 2018/1/30 0030.
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RestResult<T> {
+public class RestResult<T> implements Serializable{
     private String status;
     private String errorMsg;
     private PageInfo pageInfo;

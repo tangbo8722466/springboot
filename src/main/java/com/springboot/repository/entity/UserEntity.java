@@ -3,6 +3,7 @@ package com.springboot.repository.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * Created by tangbo on 2018/1/30 0030.
@@ -12,7 +13,7 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserEntity {
+public class UserEntity implements Serializable{
     @Id
     @GeneratedValue
     private Long id;

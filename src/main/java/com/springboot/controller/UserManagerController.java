@@ -8,18 +8,15 @@ import com.springboot.Vo.UserCreateVo;
 import com.springboot.Vo.UserUpdateVo;
 import com.springboot.repository.Dao.UserDao;
 import com.springboot.repository.entity.UserEntity;
-import com.springboot.service.HelloService;
+import com.springboot.service.impl.UserService;
 import io.swagger.annotations.Api;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import sun.invoke.empty.Empty;
 
 import javax.validation.Valid;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -31,10 +28,10 @@ import java.util.List;
 public class UserManagerController {
 
     @Autowired
-    HelloService helloService;
+    UserService userService;
 
     @Autowired
-    UserDao helloDao;
+    UserDao userDao;
 
     @Autowired
     UserDefine userDefine;
@@ -49,7 +46,7 @@ public class UserManagerController {
 
     @RequestMapping(value = "/user",  method = RequestMethod.POST)
     RestResult<UserEntity> create(@Valid @RequestBody UserCreateVo userCreateVo) {
-        return helloService.save(new UserEntity().builder().userName(userCreateVo.getUserName()).account(userCreateVo.getAccount()).password(userCreateVo.getPassword()).remark(userCreateVo.getRemark()).build());
+        return userService.save(new UserEntity().builder().userName(userCreateVo.getUserName()).account(userCreateVo.getAccount()).password(userCreateVo.getPassword()).remark(userCreateVo.getRemark()).build());
     }
 
     @RequestMapping(value = "/user/{id}",  method = RequestMethod.PUT)
@@ -58,7 +55,7 @@ public class UserManagerController {
             return new RestResult(RestResultStatusEnum.FAIL.value(), "there is no things to update!");
         }
 
-        UserEntity entity = helloDao.findOne(id);
+        UserEntity entity = userDao.findOne(id);
         if ( null == entity ) {
             return new RestResult(RestResultStatusEnum.FAIL.value(), "the user entity dose not exits!");
         }
@@ -74,27 +71,27 @@ public class UserManagerController {
         if ( userUpdateVo.getRemark() != null ) {
             entity.setRemark(userUpdateVo.getRemark());
         }
-        return helloService.update(entity);
+        return userService.update(entity);
     }
 
     @RequestMapping(value = "/user",  method = RequestMethod.GET)
     RestResult<List<UserEntity>> getAll() {
-        return helloService.list();
+        return userService.list();
     }
 
     @RequestMapping(value = "/user/{id}",  method = RequestMethod.GET)
     RestResult<UserEntity> getById(@PathVariable("id") Long id) {
-        return helloService.getById(id);
+        return userService.getById(id);
     }
 
     @RequestMapping(value = "/user/{id}",  method = RequestMethod.DELETE)
     RestResult delete(@PathVariable("id") Long id) {
-        return helloService.delete(id);
+        return userService.delete(id);
     }
 
     @RequestMapping(value = "/user/page",  method = RequestMethod.GET)
     RestResult page(@RequestParam("pageNumber") Integer pageNumber, @RequestParam("pageSize") Integer pageSize, @RequestParam(name = "name", required = false) String name) {
-        return helloService.page(pageNumber, pageSize, name);
+        return userService.page(pageNumber, pageSize, name);
     }
 
     @RequestMapping(value = "/user/userdefine",  method = RequestMethod.GET)
