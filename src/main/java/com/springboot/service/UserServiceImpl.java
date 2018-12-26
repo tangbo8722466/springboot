@@ -40,6 +40,7 @@ public class UserServiceImpl implements UserService {
     public RestResult<UserEntity> save(UserEntity hello) {
         UserEntity result = (UserEntity) helloDao.save(hello);
         userRedisService.put("user_"+ hello.getId(), hello, -1);
+        UserEntity  userEntity = userRedisService.get("user_"+ hello.getId());
         return new RestResult(RestResultStatusEnum.SUCCESS.value(), null, result);
     }
 
