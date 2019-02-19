@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     UserRedisServiceImpl userRedisService;
 
-    @CacheEvict(value="userCache", allEntries=true)
+//    @CacheEvict(value="userCache", allEntries=true)
     @Override
     public RestResult<UserEntity> save(UserEntity hello) {
         UserEntity result = (UserEntity) helloDao.save(hello);
@@ -44,14 +44,14 @@ public class UserServiceImpl implements UserService {
         return new RestResult(RestResultStatusEnum.SUCCESS.value(), null, result);
     }
 
-    @CacheEvict(value="userCache", allEntries=true)
+//    @CacheEvict(value="userCache", allEntries=true)
     @Override
     public RestResult<UserEntity> update(UserEntity hello) {
         UserEntity result = (UserEntity) helloDao.saveAndFlush(hello);
         return new RestResult(RestResultStatusEnum.SUCCESS.value(), null, result);
     }
 
-    @Cacheable(value="userCache") //缓存,这里没有指定key.
+//    @Cacheable(value="userCache") //缓存,这里没有指定key.
     @Override
     public RestResult<UserEntity> getById(Long id) {
         UserEntity result = (UserEntity) helloDao.findOne(id);
@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    @Cacheable(value="userCache")
+//    @Cacheable(value="userCache")
     @Override
     public RestResult<List<UserEntity>> list() {
         List<UserEntity> result = helloDao.findAll();
@@ -67,14 +67,14 @@ public class UserServiceImpl implements UserService {
     }
 
     //allEntries 清空缓存所有属性 确保更新后缓存刷新
-    @CacheEvict(value="userCache", allEntries=true)
+//    @CacheEvict(value="userCache", allEntries=true)
     @Override
     public RestResult delete(Long id) {
         helloDao.delete(id);
         return new RestResult(RestResultStatusEnum.SUCCESS.value(), null);
     }
 
-    @Cacheable(value="userCache", key="#p0+-+#p1")
+//    @Cacheable(value="userCache", key="#p0+-+#p1")
     @Override
     public RestResult<List<UserEntity>> page(Integer pageNumber, Integer pageSize, String name) {
         List<UserEntity> list = new ArrayList<UserEntity>();
