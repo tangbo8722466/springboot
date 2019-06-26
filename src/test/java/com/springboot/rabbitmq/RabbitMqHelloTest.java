@@ -46,5 +46,6 @@ public class RabbitMqHelloTest {
     public void fanoutExchangeQuence() throws Exception {
         helloSender.sendFanout();
     }
- 
+
+
 }

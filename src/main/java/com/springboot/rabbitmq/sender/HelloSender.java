@@ -1,6 +1,5 @@
 package com.springboot.rabbitmq.sender;
 
-import com.springboot.rabbitmq.config.CallBackSender;
 import com.springboot.rabbitmq.config.RabbitConfig;
 import com.springboot.repository.entity.UserEntity;
 import org.slf4j.Logger;
@@ -16,8 +15,8 @@ public class HelloSender {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
-    CallBackSender callBackSender;
+//    @Autowired
+//    CallBackSender callBackSender;
 
     @Autowired
     private AmqpTemplate rabbitTemplate;
@@ -38,7 +37,7 @@ public class HelloSender {
     public void send(UserEntity user) {
         logger.info("Sender object: " + user.toString());
         //this.rabbitTemplate.convertAndSend(RabbitConfig.QUEUE_B, user);
-        callBackSender.send(RabbitConfig.QUEUE_B, user);
+//        callBackSender.send(RabbitConfig.QUEUE_B, user);
     }
 
     public void sendDirect() {
@@ -48,10 +47,10 @@ public class HelloSender {
         //this.rabbitTemplate.convertAndSend("directExchange", "apple", context);
         //this.rabbitTemplate.convertAndSend("directExchange", "pear", context);
         //this.rabbitTemplate.convertAndSend("directExchange", "test", context);
-        callBackSender.send("directExchange", "apple", context);
-        callBackSender.send("directExchange", "apple", context);
-        callBackSender.send("directExchange", "pear", context);
-        callBackSender.send("directExchange", "test", context);
+//        callBackSender.send("directExchange", "apple", context);
+//        callBackSender.send("directExchange", "apple", context);
+//        callBackSender.send("directExchange", "pear", context);
+//        callBackSender.send("directExchange", "test", context);
 
     }
 
@@ -60,8 +59,8 @@ public class HelloSender {
         logger.info("sendTopic : " + context);
         //this.rabbitTemplate.convertAndSend("topicExchange", "topic.message", context);
         //this.rabbitTemplate.convertAndSend("topicExchange", "topic.messages", context);
-        callBackSender.send("topicExchange", "topic.message", context);
-        callBackSender.send("topicExchange", "topic.messages", context);
+//        callBackSender.send("topicExchange", "topic.message", context);
+//        callBackSender.send("topicExchange", "topic.messages", context);
 
     }
 
@@ -69,7 +68,7 @@ public class HelloSender {
         String context = "hi, fanout msg ";
         logger.info("Sender : " + context);
         //this.rabbitTemplate.convertAndSend("fanoutExchange","", context);
-        callBackSender.send("fanoutExchange","", context);
+//        callBackSender.send("fanoutExchange","", context);
     }
 
 
