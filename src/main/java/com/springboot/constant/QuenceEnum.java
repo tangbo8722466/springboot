@@ -1,4 +1,4 @@
-package com.springboot.Utils;
+package com.springboot.constant;
 
 /**
  * Created by tangbo on 2019/4/10 0010.

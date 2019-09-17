@@ -12,14 +12,4 @@ public class ShareMethodUtils {
         }
         return true;
     }
-
-    public static boolean checkObjFieldIsNull(Object obj) throws IllegalAccessException {
-        for (Field f : obj.getClass().getDeclaredFields()) {
-            f.setAccessible(true);
-            if (f.get(obj) == null) {
-                return true;
-            }
-        }
-        return false;
-    }
 }

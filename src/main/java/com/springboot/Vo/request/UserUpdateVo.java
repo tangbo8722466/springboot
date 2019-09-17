@@ -1,4 +1,4 @@
-package com.springboot.Vo;
+package com.springboot.Vo.request;
 
 import lombok.Data;
 

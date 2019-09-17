@@ -2,15 +2,12 @@ package com.springboot.service;
 
 import com.springboot.Utils.PageInfo;
 import com.springboot.Utils.RestResult;
-import com.springboot.Utils.RestResultStatusEnum;
+import com.springboot.constant.RestResultCodeEnum;
 import com.springboot.repository.Dao.UserDao;
 import com.springboot.repository.UserSpecification;
 import com.springboot.repository.entity.UserEntity;
 import com.springboot.service.impl.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -41,21 +38,21 @@ public class UserServiceImpl implements UserService {
         UserEntity result = (UserEntity) helloDao.save(hello);
         userRedisService.put("user_"+ hello.getId(), hello, -1);
         UserEntity  userEntity = userRedisService.get("user_"+ hello.getId());
-        return new RestResult(RestResultStatusEnum.SUCCESS.value(), null, result);
+        return new RestResult(RestResultCodeEnum.SUCCESS.code(), null, result);
     }
 
 //    @CacheEvict(value="userCache", allEntries=true)
     @Override
     public RestResult<UserEntity> update(UserEntity hello) {
         UserEntity result = (UserEntity) helloDao.saveAndFlush(hello);
-        return new RestResult(RestResultStatusEnum.SUCCESS.value(), null, result);
+        return new RestResult(RestResultCodeEnum.SUCCESS.code(), null, result);
     }
 
 //    @Cacheable(value="userCache") //缓存,这里没有指定key.
     @Override
     public RestResult<UserEntity> getById(Long id) {
         UserEntity result = (UserEntity) helloDao.findOne(id);
-        return new RestResult(RestResultStatusEnum.SUCCESS.value(), null, result);
+        return new RestResult(RestResultCodeEnum.SUCCESS.code(), null, result);
     }
 
 
@@ -63,7 +60,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public RestResult<List<UserEntity>> list() {
         List<UserEntity> result = helloDao.findAll();
-        return new RestResult(RestResultStatusEnum.SUCCESS.value(), null, result);
+        return new RestResult(RestResultCodeEnum.SUCCESS.code(), null, result);
     }
 
     //allEntries 清空缓存所有属性 确保更新后缓存刷新
@@ -71,7 +68,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public RestResult delete(Long id) {
         helloDao.delete(id);
-        return new RestResult(RestResultStatusEnum.SUCCESS.value(), null);
+        return new RestResult(RestResultCodeEnum.SUCCESS.code(), null);
     }
 
 //    @Cacheable(value="userCache", key="#p0+-+#p1")
@@ -90,6 +87,6 @@ public class UserServiceImpl implements UserService {
         while(iterable.hasNext()){
             list.add(iterable.next());
         }
-        return new RestResult(RestResultStatusEnum.SUCCESS.value(), null, pageInfo, list);
+        return new RestResult(RestResultCodeEnum.SUCCESS.code(), null, pageInfo, list);
     }
 }

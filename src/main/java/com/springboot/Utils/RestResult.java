@@ -1,5 +1,7 @@
 package com.springboot.Utils;
 
+import com.springboot.Vo.response.Empty;
+import com.springboot.constant.RestResultCodeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,19 +15,56 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RestResult<T> implements Serializable{
-    private String status;
+    private static final long serialVersionUID = 1794095672411145784L;
+    private int code;
     private String errorMsg;
     private PageInfo pageInfo;
     private T data;
 
-    public RestResult(String status, String errorMsg) {
-        this.status = status;
+    public boolean isSuccess(){
+        return RestResultCodeEnum.SUCCESS.code() == code;
+    }
+
+    public RestResult(int code, String errorMsg) {
+        this.code = code;
         this.errorMsg = errorMsg;
     }
 
-    public RestResult(String status, String errorMsg, T data) {
-        this.status = status;
+    public RestResult(int code, String errorMsg, T data) {
+        this.code = code;
         this.errorMsg = errorMsg;
         this.data = data;
+    }
+
+    public static <T> RestResult<T> buildSuccessResponse(){
+        return new RestResult(RestResultCodeEnum.SUCCESS.code(),RestResultCodeEnum.SUCCESS.msg(), new PageInfo(), new Empty());
+    }
+
+    public static <T> RestResult<T> buildSuccessResponse(T data){
+        return new RestResult<>(RestResultCodeEnum.SUCCESS.code(),RestResultCodeEnum.SUCCESS.msg(), new PageInfo(), data);
+    }
+
+    public static <T> RestResult<T> buildSuccessResponse(PageInfo pageInfo, T data){
+        return new RestResult<>(RestResultCodeEnum.SUCCESS.code(),RestResultCodeEnum.SUCCESS.msg(), pageInfo, data);
+    }
+
+    public static <T> RestResult<T> buildFailResponse(){
+        return new RestResult<>(RestResultCodeEnum.FAIL.code(),RestResultCodeEnum.FAIL.msg());
+    }
+
+    public static <T> RestResult<T> buildFailResponse(String errorMsg){
+        return new RestResult<>(RestResultCodeEnum.FAIL.code(), errorMsg);
+    }
+
+    public static <T> RestResult<T> buildFailResponse(int code, String errorMsg){
+        return new RestResult<>(code, errorMsg);
+    }
+
+    public static <T> RestResult<T> buildFailResponse(int code, String errorMsg, T data){
+        return new RestResult<>(code, errorMsg, new PageInfo(), data);
+    }
+
+    public static <T> RestResult<T> buildFailResponse(int code, String errorMsg, PageInfo pageInfo, T data){
+        return new RestResult<>(code, errorMsg, pageInfo, data);
     }
 }

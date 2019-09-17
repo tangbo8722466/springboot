@@ -1,5 +1,6 @@
 package com.springboot.rabbitmq.config;
 
+import com.springboot.dingTalkSdk.config.DingTalkDirectConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.rabbitmq.client.Channel;
@@ -34,18 +35,9 @@ public class RabbitConfig {
     @Value("${spring.rabbitmq.password}")
     private String password;
 
-    public static final String EXCHANGE_A = "my-mq-exchange_A";
-    public static final String EXCHANGE_B = "my-mq-exchange_B";
-    public static final String EXCHANGE_C = "my-mq-exchange_C";
-
-
     public static final String QUEUE_A = "QUEUE_A";
     public static final String QUEUE_B = "QUEUE_B";
     public static final String QUEUE_C = "QUEUE_C";
-
-    public static final String ROUTINGKEY_A = "spring-boot-routingKey_A";
-    public static final String ROUTINGKEY_B = "spring-boot-routingKey_B";
-    public static final String ROUTINGKEY_C = "spring-boot-routingKey_C";
 
     @Bean
     public ConnectionFactory connectionFactory() {
@@ -191,8 +183,8 @@ public class RabbitConfig {
     }
 
     /*
-    fanout
-     */
+   fanout
+    */
     @Bean
     public Queue AMessage() {
         return new Queue("fanout.A");
@@ -258,5 +250,46 @@ public class RabbitConfig {
     Binding bindingExchangeMessages(Queue queueMessages, TopicExchange exchange) {
         return BindingBuilder.bind(queueMessages).to(exchange).with("topic.#");
     }
+
+
+    /**
+     * dingTalk消息队列
+     * @return
+     */
+    @Bean
+    public Queue queueText() {
+        return new Queue(DingTalkDirectConfig.DING_TALK_TEXT);
+    }
+
+    @Bean
+    public Queue queueLink() {
+        return new Queue(DingTalkDirectConfig.DING_TALK_LINK);
+    }
+
+    @Bean
+    public Queue queueMarkDown() {
+        return new Queue(DingTalkDirectConfig.DING_TALK_MARKDOWN);
+    }
+
+    @Bean
+    DirectExchange dingTalkDirectExchange() {
+        return new DirectExchange(DingTalkDirectConfig.DING_TALK_EXCHANGE);
+    }
+
+    @Bean
+    Binding bindingDirectText(Queue queueText, DirectExchange dingTalkDirectExchange) {
+        return BindingBuilder.bind(queueText).to(dingTalkDirectExchange).with(DingTalkDirectConfig.DING_TALK_TEXT);
+    }
+
+    @Bean
+    Binding bindingDirectLink(Queue queueLink, DirectExchange dingTalkDirectExchange) {
+        return BindingBuilder.bind(queueLink).to(dingTalkDirectExchange).with(DingTalkDirectConfig.DING_TALK_LINK);
+    }
+
+    @Bean
+    Binding bindingDirectMarkDown(Queue queueMarkDown, DirectExchange dingTalkDirectExchange) {
+        return BindingBuilder.bind(queueMarkDown).to(dingTalkDirectExchange).with(DingTalkDirectConfig.DING_TALK_MARKDOWN);
+    }
+
  
 }

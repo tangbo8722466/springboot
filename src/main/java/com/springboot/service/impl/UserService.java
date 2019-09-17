@@ -15,4 +15,7 @@ public interface UserService {
     RestResult<List<UserEntity>> list();
     RestResult delete(Long id);
     RestResult<List<UserEntity>> page(Integer pageNumber, Integer pageSize, String name);
+    default boolean health(){
+        return true;
+    }
 }

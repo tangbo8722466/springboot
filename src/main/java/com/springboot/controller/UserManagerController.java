@@ -1,11 +1,11 @@
 package com.springboot.controller;
 
 import com.springboot.Utils.RestResult;
-import com.springboot.Utils.RestResultStatusEnum;
+import com.springboot.constant.RestResultCodeEnum;
 import com.springboot.Utils.ShareMethodUtils;
 import com.springboot.Utils.UserDefine;
-import com.springboot.Vo.UserCreateVo;
-import com.springboot.Vo.UserUpdateVo;
+import com.springboot.Vo.request.UserCreateVo;
+import com.springboot.Vo.request.UserUpdateVo;
 import com.springboot.repository.Dao.UserDao;
 import com.springboot.repository.entity.UserEntity;
 import com.springboot.service.impl.UserService;
@@ -46,18 +46,19 @@ public class UserManagerController {
 
     @RequestMapping(value = "/user",  method = RequestMethod.POST)
     RestResult<UserEntity> create(@Valid @RequestBody UserCreateVo userCreateVo) {
+        userService.health();
         return userService.save(new UserEntity().builder().userName(userCreateVo.getUserName()).account(userCreateVo.getAccount()).password(userCreateVo.getPassword()).remark(userCreateVo.getRemark()).build());
     }
 
     @RequestMapping(value = "/user/{id}",  method = RequestMethod.PUT)
     RestResult<UserEntity> update(@PathVariable("id") Long id, @RequestBody UserUpdateVo userUpdateVo) throws IllegalAccessException {
         if ( ObjectUtils.isEmpty(userUpdateVo) || ShareMethodUtils.checkAllObjFieldIsNull(userUpdateVo) ){
-            return new RestResult(RestResultStatusEnum.FAIL.value(), "there is no things to update!");
+            return new RestResult(RestResultCodeEnum.FAIL.code(), "there is no things to update!");
         }
 
         UserEntity entity = userDao.findOne(id);
         if ( null == entity ) {
-            return new RestResult(RestResultStatusEnum.FAIL.value(), "the user entity dose not exits!");
+            return new RestResult(RestResultCodeEnum.FAIL.code(), "the user entity dose not exits!");
         }
 
         if ( !StringUtils.isEmpty(userUpdateVo.getUserName()) ) {
@@ -96,16 +97,6 @@ public class UserManagerController {
 
     @RequestMapping(value = "/user/userdefine",  method = RequestMethod.GET)
     RestResult userdefine() {
-        return new RestResult(RestResultStatusEnum.SUCCESS.value(), null, userDefine.getName()+","+userDefine.getPasswd()+","+msg);
-    }
-
-    @RequestMapping(value = "/get/certificateproductinfo/{history_id}", method = RequestMethod.GET)
-    String getErpTestDateForHistoryId(@PathVariable("history_id") Integer historyId){
-        String waterKey = "{\"items\": [{\"ROW_ID\": 10421,\"HISTORY_ID\": 10361,\"CERTIFICATE_INV_ID\": 13642,\"SERIAL_NUMBER\": \"18-52-0001-CM\",\"CONTRACT_NUMBER\": \"NSF20181201010102436\",\"OEL_LINE_NUM\": \"1.1.8\",\"PRODUCT_NUMBER\": \"ESPC-NSPS-GOL(FY)-N01\",\"PRODUCT_DESC\": \"ESPC黄金服务包(首年)-基础版，包含产品系统升级授权、产品规则升级授权、远程支持、产品安装-基础版、安全通告服务；\",\"PRODUCT_TYPE\": \"ESPC\",\"PRODUCT_MODEL\": \"AURORA\",\"QUANTITY\": 1,\"PRIMARY_UOM_CODE\": \"S/Y\"},{\"ROW_ID\": 10422,\"HISTORY_ID\": 10361,\"CERTIFICATE_INV_ID\": 13642,\"SERIAL_NUMBER\": \"18-52-0001-CM\",\"CONTRACT_NUMBER\": \"NSF20181201010102436\",\"OEL_LINE_NUM\": \"1.1.10\",\"PRODUCT_NUMBER\": \"ESPC-NSPS-GOL(CE)-N01\",\"PRODUCT_DESC\": \"ESPC黄金服务包(续约)，包含产品系统升级授权、产品规则升级授权、远程支持、安全通告服务；\",\"PRODUCT_TYPE\": \"ESPC\",\"PRODUCT_MODEL\": \"AURORA\",\"QUANTITY\": 1,\"PRIMARY_UOM_CODE\": \"S/Y\"},{\"ROW_ID\": 10423,\"HISTORY_ID\": 10361,\"CERTIFICATE_INV_ID\": 13642,\"SERIAL_NUMBER\": \"18-52-0001-CM\",\"CONTRACT_NUMBER\": \"NSF20181201010102436\",\"OEL_LINE_NUM\": \"1.1.2\",\"PRODUCT_NUMBER\": \"ESPC-NOS-01\",\"PRODUCT_DESC\": \"ESPC引擎系统\",\"PRODUCT_TYPE\": \"ESPC\",\"PRODUCT_MODEL\": \"AURORA\",\"QUANTITY\": 1,\"PRIMARY_UOM_CODE\": \"PCS\"},{\"ROW_ID\": 10424,\"HISTORY_ID\": 10361,\"CERTIFICATE_INV_ID\": 13642,\"SERIAL_NUMBER\": \"18-52-0001-CM\",\"CONTRACT_NUMBER\": \"NSF20181201010102436\",\"OEL_LINE_NUM\": \"1.1.4\",\"PRODUCT_NUMBER\": \"WATERMARK\",\"PRODUCT_DESC\": \"虚拟化产品集中授权功能--本地授权。ESPC与加密狗联动，实现绿盟虚拟化产品的本地授权\",\"PRODUCT_TYPE\": \"ESPC\",\"PRODUCT_MODEL\": \"AURORA\",\"QUANTITY\": 1,\"PRIMARY_UOM_CODE\": \"PCS\"},{\"ROW_ID\": 10425,\"HISTORY_ID\": 10361,\"CERTIFICATE_INV_ID\": 13642,\"SERIAL_NUMBER\": \"18-52-0001-CM\",\"CONTRACT_NUMBER\": \"NSF20181201010102436\",\"OEL_LINE_NUM\": \"1.1.6\",\"PRODUCT_NUMBER\": \"ESPC-AEL-EX\",\"PRODUCT_DESC\": \"增加1个集群部署节点价格\",\"PRODUCT_TYPE\": \"ESPC\",\"PRODUCT_MODEL\": \"AURORA\",\"QUANTITY\": 1,\"PRIMARY_UOM_CODE\": \"PCS\"}]}";
-        return waterKey;
-    }
-    @RequestMapping(value = "/get/certificatebaseinfo", method = RequestMethod.GET)
-    String getErpBaseInfoFor() {
-        return "{\"items\": [{\"CERTIFICATE_INV_ID\": 13642,\"HISTORY_ID\": 10361,\"PROJECT_NUMBER\": \"181228124445\",\"PROJECT_NAME\": \"证书自动化-ESPC产品-测试124445\",\"CONTRACT_NUMBER\": \"NSF20181201010102436\",\"PRODUCT_SERIES\": \"AURORA\",\"PRODUCT_TYPE\": \"ESPC\",\"PARTY_NUMBER\": \"199778\",\"PARTY_NAME\": \"浦发银行\",\"SERIAL_NUMBER\": \"18-52-0001-CM\",\"APPLY_NUMBER\": \"3627\",\"APPLY_NAME\": \"陈丹丹3627,\",\"APPLY_EMAIL\": \"songhuihui@nsfocus.com\",\"APPLY_DATE\": \"2019-01-09\",\"CUST_EMAIL1\": \"1336592249@qq.com\",\"CUST_EMAIL2\": null,\"CERT_START_DATE\": \"2019-01-09\",\"CERT_END_DATE\": \"2020-01-09\",\"CERT_TYPE_NAME\": \"临时\",\"DEPLOY_MODE\": null,\"COMMENTS\": null,\"MAKE_STATE\": \"制作中\",\"MAKE_DATE\": \"2019-01-24\",\"verification_method\": null}]}";
+        return new RestResult(RestResultCodeEnum.SUCCESS.code(), null, userDefine.getName()+","+userDefine.getPasswd()+","+msg);
     }
 }

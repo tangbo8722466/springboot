@@ -24,7 +24,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableConfigurationProperties
 //ComponentScan(basePackages={"com.core"})
 //@ComponentScan：会自动扫描指定包下的全部标有@Component的类，并注册成bean，当然包括@Component下的子注解@Service,@Repository,@Controller。
-@ComponentScan(basePackages={"com.springboot"})
+//@ComponentScan(basePackages={"com.springboot"})
 //@MapperScan()
 
 @EntityScan(basePackages={"com.springboot.repository.entity"})

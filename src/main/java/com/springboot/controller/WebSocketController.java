@@ -2,7 +2,7 @@ package com.springboot.controller;
 
 
 import com.springboot.Utils.RestResult;
-import com.springboot.Utils.RestResultStatusEnum;
+import com.springboot.constant.RestResultCodeEnum;
 import com.springboot.websocket.WebSocketServer;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +26,7 @@ public class WebSocketController {
 	@RequestMapping(value = "/socket/{cid}", method = RequestMethod.GET)
 	@ResponseBody
 	public  RestResult<String> socket(@PathVariable String cid) {
-		return new RestResult(RestResultStatusEnum.SUCCESS.value(), "ok.", cid);
+		return new RestResult(RestResultCodeEnum.SUCCESS.code(), "ok.", cid);
 	}
 	//推送数据接口
 	@RequestMapping(value = "/socket/push/{cid}", method = RequestMethod.GET)
@@ -36,9 +36,9 @@ public class WebSocketController {
 			WebSocketServer.sendInfo(message,cid);
 		} catch (IOException e) {
 			e.printStackTrace();
-			return new RestResult(RestResultStatusEnum.FAIL.value(), e.getMessage());
+			return new RestResult(RestResultCodeEnum.FAIL.code(), e.getMessage());
 		}
-		return new RestResult(RestResultStatusEnum.SUCCESS.value(), "ok.", cid);
+		return new RestResult(RestResultCodeEnum.SUCCESS.code(), "ok.", cid);
 	}
 
 	//推送数据接口
@@ -49,8 +49,8 @@ public class WebSocketController {
 			WebSocketServer.sendInfo(message,null);
 		} catch (IOException e) {
 			e.printStackTrace();
-			return new RestResult(RestResultStatusEnum.FAIL.value(), e.getMessage());
+			return new RestResult(RestResultCodeEnum.FAIL.code(), e.getMessage());
 		}
-		return new RestResult(RestResultStatusEnum.SUCCESS.value(), "ok.", "success");
+		return new RestResult(RestResultCodeEnum.SUCCESS.code(), "ok.", "success");
 	}
 }
