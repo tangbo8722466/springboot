@@ -1,10 +1,8 @@
 package com.springboot.rabbitmq;
 
-import com.springboot.rabbitmq.sender.HelloSender;
 import com.springboot.repository.entity.UserEntity;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -12,9 +10,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 @SpringBootTest
 public class RabbitMqHelloTest {
  
-    @Autowired
-    private HelloSender helloSender;
- 
+//    @Autowired
+//    private HelloSender helloSender;
+//
 //    @Test
 //    public void hello() throws Exception {
 //        helloSender.send(1);
@@ -27,25 +25,25 @@ public class RabbitMqHelloTest {
 //        }
 //    }
 
-    @Test
-    public void user() throws Exception {
-        helloSender.send(new UserEntity().builder().userName("bobo").password("12345").build());
-    }
-
-    @Test
-    public void directExchangeQuence() throws Exception {
-       helloSender.sendDirect();
-    }
-
-    @Test
-    public void topicExchangeQuence() throws Exception {
-        helloSender.sendTopic();
-    }
-
-    @Test
-    public void fanoutExchangeQuence() throws Exception {
-        helloSender.sendFanout();
-    }
+//    @Test
+//    public void user() throws Exception {
+//        helloSender.send(new UserEntity().builder().userName("bobo").password("12345").build());
+//    }
+//
+//    @Test
+//    public void directExchangeQuence() throws Exception {
+//       helloSender.sendDirect();
+//    }
+//
+//    @Test
+//    public void topicExchangeQuence() throws Exception {
+//        helloSender.sendTopic();
+//    }
+//
+//    @Test
+//    public void fanoutExchangeQuence() throws Exception {
+//        helloSender.sendFanout();
+//    }
 
 
 }

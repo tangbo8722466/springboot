@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,13 +30,18 @@ public class DingTalkBiz implements RabbitTemplate.ConfirmCallback, RabbitTempla
     @Autowired
     RabbitTemplate rabbitTemplate;
 
+    //PostConstruct注释用于在完成依赖注入以执行任何初始化之后需要执行的方法
+    @PostConstruct
+    public void init(){
+        rabbitTemplate.setConfirmCallback(this);            //指定 ConfirmCallback
+        rabbitTemplate.setReturnCallback(this);             //指定 ReturnCallback
+    }
 
     public RestResult<Empty> sendTextIntoQueue(TextRequestVo requestVo){
         try {
             CorrelationData correlationId = new CorrelationData(UUID.randomUUID().toString());
             log.info("Text消费发送id:" + correlationId);
             rabbitTemplate.convertAndSend(DingTalkDirectConfig.DING_TALK_EXCHANGE, DingTalkDirectConfig.DING_TALK_TEXT, requestVo, correlationId);
-            Thread.sleep(1000);
         }
         catch(Exception ex){
             ex.printStackTrace();
@@ -50,7 +56,6 @@ public class DingTalkBiz implements RabbitTemplate.ConfirmCallback, RabbitTempla
             CorrelationData correlationId = new CorrelationData(UUID.randomUUID().toString());
             log.info("Link消费发送id:" + correlationId);
             rabbitTemplate.convertAndSend(DingTalkDirectConfig.DING_TALK_EXCHANGE, DingTalkDirectConfig.DING_TALK_LINK, requestVo, correlationId);
-            Thread.sleep(1000);
         }
         catch(Exception ex){
             ex.printStackTrace();
@@ -64,7 +69,6 @@ public class DingTalkBiz implements RabbitTemplate.ConfirmCallback, RabbitTempla
             CorrelationData correlationId = new CorrelationData(UUID.randomUUID().toString());
             log.info("MarkDown消费发送id:" + correlationId);
             rabbitTemplate.convertAndSend(DingTalkDirectConfig.DING_TALK_EXCHANGE, DingTalkDirectConfig.DING_TALK_MARKDOWN, requestVo, correlationId);
-            Thread.sleep(1000);
         }
         catch(Exception ex){
             ex.printStackTrace();

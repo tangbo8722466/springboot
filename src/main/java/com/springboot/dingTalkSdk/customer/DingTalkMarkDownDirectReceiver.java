@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
-@RabbitListener(queues = {DingTalkDirectConfig.DING_TALK_MARKDOWN})
+//@RabbitListener(queues = {DingTalkDirectConfig.DING_TALK_MARKDOWN})
 public class DingTalkMarkDownDirectReceiver {
 
     @Autowired
