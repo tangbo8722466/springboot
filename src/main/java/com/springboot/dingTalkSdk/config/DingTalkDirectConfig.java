@@ -8,4 +8,7 @@ public class DingTalkDirectConfig {
     public final static String DING_TALK_TEXT = "ding_talk_text";
     public final static String DING_TALK_LINK = "ding_talk_link";
     public final static String DING_TALK_MARKDOWN = "ding_talk_markdown";
+    public final static String DING_TALK_DELAY_TEXT = "ding_talk_delay_text";
+    public final static String DING_TALK_DELAY_LINK = "ding_talk_delay_link";
+    public final static String DING_TALK_DELAY_MARKDOWN = "ding_talk_delay_markdown";
 }

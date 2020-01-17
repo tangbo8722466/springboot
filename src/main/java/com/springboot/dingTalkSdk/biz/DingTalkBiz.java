@@ -12,7 +12,9 @@ import com.springboot.dingTalkSdk.vo.request.MarkDownRequestVo;
 import com.springboot.dingTalkSdk.vo.request.TextRequestVo;
 import com.taobao.api.ApiException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessagePostProcessor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.support.CorrelationData;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,8 +42,30 @@ public class DingTalkBiz implements RabbitTemplate.ConfirmCallback, RabbitTempla
     public RestResult<Empty> sendTextIntoQueue(TextRequestVo requestVo){
         try {
             CorrelationData correlationId = new CorrelationData(UUID.randomUUID().toString());
-            log.info("Text消费发送id:" + correlationId);
+            log.info("Text消费发送id:" + correlationId.getId());
             rabbitTemplate.convertAndSend(DingTalkDirectConfig.DING_TALK_EXCHANGE, DingTalkDirectConfig.DING_TALK_TEXT, requestVo, correlationId);
+        }
+        catch(Exception ex){
+            ex.printStackTrace();
+            return RestResult.buildFailResponse(ex.getMessage());
+        }
+
+        return RestResult.buildSuccessResponse();
+    }
+
+    public RestResult<Empty> sendTextIntoDelayQueue(TextRequestVo requestVo){
+        try {
+            CorrelationData correlationId = new CorrelationData(UUID.randomUUID().toString());
+            log.info("Text延迟消费发送id:" + correlationId.getId());
+            long expiration = 5000;
+            MessagePostProcessor processor = new MessagePostProcessor(){
+                @Override
+                public Message postProcessMessage(Message message) throws AmqpException {
+                    message.getMessageProperties().setExpiration(String.valueOf(expiration));
+                    return message;
+                }
+            };
+            rabbitTemplate.convertAndSend(DingTalkDirectConfig.DING_TALK_EXCHANGE, DingTalkDirectConfig.DING_TALK_DELAY_TEXT, requestVo, processor, correlationId);
         }
         catch(Exception ex){
             ex.printStackTrace();
@@ -64,11 +88,53 @@ public class DingTalkBiz implements RabbitTemplate.ConfirmCallback, RabbitTempla
         return RestResult.buildSuccessResponse();
     }
 
+    public  RestResult<Empty> sendLinkIntoDelayQueue(LinkRequestVo requestVo){
+        try {
+            CorrelationData correlationId = new CorrelationData(UUID.randomUUID().toString());
+            log.info("Link延迟消费发送id:" + correlationId);
+            long expiration = 5000;
+            MessagePostProcessor processor = new MessagePostProcessor(){
+                @Override
+                public Message postProcessMessage(Message message) throws AmqpException {
+                    message.getMessageProperties().setExpiration(String.valueOf(expiration));
+                    return message;
+                }
+            };
+            rabbitTemplate.convertAndSend(DingTalkDirectConfig.DING_TALK_EXCHANGE, DingTalkDirectConfig.DING_TALK_DELAY_LINK, requestVo, processor, correlationId);
+        }
+        catch(Exception ex){
+            ex.printStackTrace();
+            return RestResult.buildFailResponse(ex.getMessage());
+        }
+        return RestResult.buildSuccessResponse();
+    }
+
     public  RestResult<Empty> sendMarkdownIntoQueue(MarkDownRequestVo requestVo){
         try {
             CorrelationData correlationId = new CorrelationData(UUID.randomUUID().toString());
             log.info("MarkDown消费发送id:" + correlationId);
             rabbitTemplate.convertAndSend(DingTalkDirectConfig.DING_TALK_EXCHANGE, DingTalkDirectConfig.DING_TALK_MARKDOWN, requestVo, correlationId);
+        }
+        catch(Exception ex){
+            ex.printStackTrace();
+            return RestResult.buildFailResponse(ex.getMessage());
+        }
+        return RestResult.buildSuccessResponse();
+    }
+
+    public  RestResult<Empty> sendMarkdownIntoDelayQueue(MarkDownRequestVo requestVo){
+        try {
+            CorrelationData correlationId = new CorrelationData(UUID.randomUUID().toString());
+            log.info("MarkDown延迟消费发送id:" + correlationId);
+            long expiration = 5000;
+            MessagePostProcessor processor = new MessagePostProcessor(){
+                @Override
+                public Message postProcessMessage(Message message) throws AmqpException {
+                    message.getMessageProperties().setExpiration(String.valueOf(expiration));
+                    return message;
+                }
+            };
+            rabbitTemplate.convertAndSend(DingTalkDirectConfig.DING_TALK_EXCHANGE, DingTalkDirectConfig.DING_TALK_DELAY_MARKDOWN, requestVo, processor, correlationId);
         }
         catch(Exception ex){
             ex.printStackTrace();
@@ -141,7 +207,7 @@ public class DingTalkBiz implements RabbitTemplate.ConfirmCallback, RabbitTempla
     */
     @Override
     public void confirm(CorrelationData correlationData, boolean ack, String cause) {
-        log.info("回调id:" + correlationData);
+        log.info("回调id:" + correlationData.getId());
         if (ack) {
             log.info("消息成功消费");
         } else {

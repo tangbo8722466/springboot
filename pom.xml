@@ -155,6 +155,22 @@
             <!--<version>1.5.2.RELEASE</version>-->
         </dependency>
 
+        <dependency>
+            <groupId>taobao</groupId>
+            <artifactId>dingtalk</artifactId>
+            <version>0.1</version>
+            <scope>system</scope>
+            <type>jar</type>
+            <systemPath>${project.basedir}/src/main/resources/lib/taobao-sdk-java-auto_1479188381469-20200116.jar</systemPath>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.47</version>         
+        </dependency>
+
     </dependencies>
     <build>
         <finalName>springboot</finalName>
@@ -162,6 +178,10 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <!-- 引入本地jar-->
+                <configuration>
+                    <includeSystemScope>true</includeSystemScope>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

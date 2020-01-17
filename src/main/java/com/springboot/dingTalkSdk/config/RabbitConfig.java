@@ -1,5 +1,9 @@
 package com.springboot.dingTalkSdk.config;
 
+import com.alibaba.fastjson.JSONObject;
+import com.dingtalk.api.response.OapiRobotSendResponse;
+import com.springboot.dingTalkSdk.biz.DingTalkBiz;
+import com.springboot.dingTalkSdk.vo.request.TextRequestVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
@@ -9,11 +13,16 @@ import org.springframework.amqp.rabbit.core.ChannelAwareMessageListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
+
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
 @Configuration
 @Slf4j
@@ -98,6 +107,12 @@ public class RabbitConfig {
 
     @Value("${spring.rabbitmq.publisher-confirms}")
     private Boolean publisherConfirms;
+    
+    @Autowired
+    DingTalkBiz dingTalkBiz;
+
+    @Value("${spring.rabbitmq.dingTalk.link.url}")
+    private String dingTalkLinkUrl;
 
     @Bean
     public ConnectionFactory connectionFactory() {
@@ -154,7 +169,7 @@ public class RabbitConfig {
         //设置接收多个队列里面的消息，这里设置接收队列A
         //假如想一个消费者处理多个队列里面的信息可以如下设置：
         //container.setQueues(queueText(), queueLink(), queueMarkDown());
-        container.setQueues(queueLink(), queueMarkDown());
+        container.setQueues(queueText(), queueMarkDown());
         container.setExposeListenerChannel(true);
         //设置最大的并发的消费者数量
         container.setMaxConcurrentConsumers(10);
@@ -182,6 +197,17 @@ public class RabbitConfig {
                     //deliveryTag:该消息的index
                     //multiple：是否批量.true:将一次性ack所有小于deliveryTag的消息。
                     // false只确认当前一个消息收到，true确认所有consumer获得的消息
+
+                    String json = new String(message.getBody(), StandardCharsets.UTF_8);
+                    TextRequestVo textRequestVo = JSONObject.parseObject(json, TextRequestVo.class);
+                    OapiRobotSendResponse response = dingTalkBiz.sendText(dingTalkLinkUrl, textRequestVo);
+                    log.info("send ding link:" + net.sf.json.JSONObject.fromObject(response).toString());
+                    if (response.isSuccess()) {
+                        dingTalkBiz.sendTextIntoDelayQueue(textRequestVo);
+                    }
+                    else {
+                        dingTalkBiz.sendTextIntoDelayQueue(textRequestVo);
+                    }
                     channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -221,13 +247,41 @@ public class RabbitConfig {
     }
 
     @Bean
+    Queue delayQueueText() {
+        Map<String, Object> arguments = new HashMap<>();
+        arguments.put("x-dead-letter-exchange", DingTalkDirectConfig.DING_TALK_EXCHANGE); // DLX，dead letter发送到的exchange
+        arguments.put("x-dead-letter-routing-key", DingTalkDirectConfig.DING_TALK_TEXT); // dead letter携带的routing key
+        //arguments.put("x-message-ttl", QUEUE_EXPIRATION); // 设置队列的过期时间，如果消费发送也设置了过期时间，将采用最小的过期时间
+        return new Queue(DingTalkDirectConfig.DING_TALK_DELAY_TEXT,true, false, false, arguments);
+    }
+
+
+    @Bean
     public Queue queueLink() {
         return new Queue(DingTalkDirectConfig.DING_TALK_LINK,true, false, false);
     }
 
     @Bean
+    public Queue delayQueueLink() {
+        Map<String, Object> arguments = new HashMap<>();
+        arguments.put("x-dead-letter-exchange", DingTalkDirectConfig.DING_TALK_EXCHANGE); // DLX，dead letter发送到的exchange
+        arguments.put("x-dead-letter-routing-key", DingTalkDirectConfig.DING_TALK_LINK); // dead letter携带的routing key
+        //arguments.put("x-message-ttl", QUEUE_EXPIRATION); // 设置队列的过期时间，如果消费发送也设置了过期时间，将采用最小的过期时间
+        return new Queue(DingTalkDirectConfig.DING_TALK_DELAY_LINK,true, false, false, arguments);
+    }
+
+    @Bean
     public Queue queueMarkDown() {
         return new Queue(DingTalkDirectConfig.DING_TALK_MARKDOWN,true, false, false);
+    }
+
+    @Bean
+    public Queue delayQueueMarkDown() {
+        Map<String, Object> arguments = new HashMap<>();
+        arguments.put("x-dead-letter-exchange", DingTalkDirectConfig.DING_TALK_EXCHANGE); // DLX，dead letter发送到的exchange
+        arguments.put("x-dead-letter-routing-key", DingTalkDirectConfig.DING_TALK_MARKDOWN); // dead letter携带的routing key
+        //arguments.put("x-message-ttl", QUEUE_EXPIRATION); // 设置队列的过期时间，如果消费发送也设置了过期时间，将采用最小的过期时间
+        return new Queue(DingTalkDirectConfig.DING_TALK_DELAY_MARKDOWN,true, false, false, arguments);
     }
 
     /*
@@ -254,5 +308,19 @@ public class RabbitConfig {
         return BindingBuilder.bind(queueMarkDown).to(dingTalkDirectExchange).with(DingTalkDirectConfig.DING_TALK_MARKDOWN);
     }
 
+    @Bean
+    Binding bindingDirectDelayText(Queue delayQueueText, DirectExchange dingTalkDirectExchange) {
+        return BindingBuilder.bind(delayQueueText).to(dingTalkDirectExchange).with(DingTalkDirectConfig.DING_TALK_DELAY_TEXT);
+    }
+
+    @Bean
+    Binding bindingDirectDelayLink(Queue delayQueueLink, DirectExchange dingTalkDirectExchange) {
+        return BindingBuilder.bind(delayQueueLink).to(dingTalkDirectExchange).with(DingTalkDirectConfig.DING_TALK_DELAY_LINK);
+    }
+
+    @Bean
+    Binding bindingDirectDelayMarkDown(Queue delayQueueMarkDown, DirectExchange dingTalkDirectExchange) {
+        return BindingBuilder.bind(delayQueueMarkDown).to(dingTalkDirectExchange).with(DingTalkDirectConfig.DING_TALK_DELAY_MARKDOWN);
+    }
  
 }

@@ -25,28 +25,28 @@ public class DirectRabbitConfig {
     final static String apple = "apple";
     final static String pear = "pear";
 
-//    @Bean
-//    public Queue queueApple() {
-//        return new Queue(DirectRabbitConfig.apple);
-//    }
-//
-//    @Bean
-//    public Queue queuePear() {
-//        return new Queue(DirectRabbitConfig.pear);
-//    }
-//
-//    @Bean
-//    DirectExchange directExchange() {
-//        return new DirectExchange("directExchange");
-//    }
-//
-//    @Bean
-//    Binding bindingDirectApple(Queue queueApple, DirectExchange directExchange) {
-//        return BindingBuilder.bind(queueApple).to(directExchange).with(DirectRabbitConfig.apple);
-//    }
-//
-//    @Bean
-//    Binding bindingDirectPear(Queue queuePear, DirectExchange directExchange) {
-//        return BindingBuilder.bind(queuePear).to(directExchange).with(DirectRabbitConfig.pear);
-//    }
+    @Bean
+    public Queue queueApple() {
+        return new Queue(DirectRabbitConfig.apple);
+    }
+
+    @Bean
+    public Queue queuePear() {
+        return new Queue(DirectRabbitConfig.pear);
+    }
+
+    @Bean
+    DirectExchange directExchange() {
+        return new DirectExchange("directExchange");
+    }
+
+    @Bean
+    Binding bindingDirectApple(Queue queueApple, DirectExchange directExchange) {
+        return BindingBuilder.bind(queueApple).to(directExchange).with(DirectRabbitConfig.apple);
+    }
+
+    @Bean
+    Binding bindingDirectPear(Queue queuePear, DirectExchange directExchange) {
+        return BindingBuilder.bind(queuePear).to(directExchange).with(DirectRabbitConfig.pear);
+    }
 }
