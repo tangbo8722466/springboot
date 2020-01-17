@@ -53,7 +53,7 @@ public class DingTalkBiz implements RabbitTemplate.ConfirmCallback, RabbitTempla
         return RestResult.buildSuccessResponse();
     }
 
-    public RestResult<Empty> sendTextIntoDelayQueue(TextRequestVo requestVo){
+    public RestResult<Empty> sendTextIntoDelayQueue(Message originMessage, TextRequestVo requestVo){
         try {
             CorrelationData correlationId = new CorrelationData(UUID.randomUUID().toString());
             log.info("Text延迟消费发送id:" + correlationId.getId());
@@ -61,6 +61,7 @@ public class DingTalkBiz implements RabbitTemplate.ConfirmCallback, RabbitTempla
             MessagePostProcessor processor = new MessagePostProcessor(){
                 @Override
                 public Message postProcessMessage(Message message) throws AmqpException {
+                    message = originMessage;
                     message.getMessageProperties().setExpiration(String.valueOf(expiration));
                     return message;
                 }

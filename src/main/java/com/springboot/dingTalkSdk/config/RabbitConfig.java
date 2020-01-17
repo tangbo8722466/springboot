@@ -22,6 +22,7 @@ import org.springframework.context.annotation.Scope;
 
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Configuration
@@ -203,10 +204,14 @@ public class RabbitConfig {
                     OapiRobotSendResponse response = dingTalkBiz.sendText(dingTalkLinkUrl, textRequestVo);
                     log.info("send ding link:" + net.sf.json.JSONObject.fromObject(response).toString());
                     if (response.isSuccess()) {
-                        dingTalkBiz.sendTextIntoDelayQueue(textRequestVo);
+                        if (getRetryCount(message.getMessageProperties()) <= 3) {
+                            dingTalkBiz.sendTextIntoDelayQueue(message, textRequestVo);
+                        }
                     }
                     else {
-                        dingTalkBiz.sendTextIntoDelayQueue(textRequestVo);
+                        if (getRetryCount(message.getMessageProperties()) <= 3) {
+                            dingTalkBiz.sendTextIntoDelayQueue(message, textRequestVo);
+                        }
                     }
                     channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
                 } catch (Exception e) {
@@ -321,6 +326,25 @@ public class RabbitConfig {
     @Bean
     Binding bindingDirectDelayMarkDown(Queue delayQueueMarkDown, DirectExchange dingTalkDirectExchange) {
         return BindingBuilder.bind(delayQueueMarkDown).to(dingTalkDirectExchange).with(DingTalkDirectConfig.DING_TALK_DELAY_MARKDOWN);
+    }
+
+    /**
+     * 获取重复次数
+     */
+    @SuppressWarnings("unchecked")
+    public static long getRetryCount(MessageProperties properties) {
+        long retryCount = 0;
+        Map<String, Object> headers = properties.getHeaders();
+        if (null != headers) {
+            if (headers.containsKey("x-death")) {
+                List<Map<String, Object>> deathList = (List<Map<String, Object>>) headers.get("x-death");
+                if (!deathList.isEmpty()) {
+                    Map<String, Object> deathEntry = deathList.get(0);
+                    retryCount = (Long) deathEntry.get("count");
+                }
+            }
+        }
+        return retryCount;
     }
  
 }
