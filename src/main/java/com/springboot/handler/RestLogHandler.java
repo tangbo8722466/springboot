@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 public class RestLogHandler {
     private Logger logger = Logger.getLogger(RestLogHandler.class);
 
+    //设置切入点
     @Pointcut("execution(* com.springboot.controller.*.*(..))")
     public void exec(){
 

@@ -19,12 +19,14 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.support.CorrelationData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.UUID;
 
+@Service
 @Component
 @Slf4j
 public class DingTalkBiz implements RabbitTemplate.ConfirmCallback, RabbitTemplate.ReturnCallback{

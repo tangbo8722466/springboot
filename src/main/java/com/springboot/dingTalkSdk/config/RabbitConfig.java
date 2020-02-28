@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.dingtalk.api.response.OapiRobotSendResponse;
 import com.springboot.dingTalkSdk.biz.DingTalkBiz;
 import com.springboot.dingTalkSdk.vo.request.TextRequestVo;
+import jdk.nashorn.internal.ir.annotations.Reference;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
@@ -109,7 +110,7 @@ public class RabbitConfig {
     @Value("${spring.rabbitmq.publisher-confirms}")
     private Boolean publisherConfirms;
     
-    @Autowired
+    @Reference
     DingTalkBiz dingTalkBiz;
 
     @Value("${spring.rabbitmq.dingTalk.link.url}")
@@ -121,18 +122,18 @@ public class RabbitConfig {
         connectionFactory.setUsername(username);
         connectionFactory.setPassword(password);
         connectionFactory.setVirtualHost(virtualHost);
-        // ack，这意味着当你从消息队列取出一个消息时，ack自动发送，mq就会将消息删除。
-        // 而为了保证消息的正确处理，我们需要将消息处理修改为手动确认的方式
+        // 通过实现 ReturnCallback 接口，启动消息失败返回
+        /*
+        如果消息没有到exchange,则confirm回调,ack=false
+        如果消息到达exchange,则confirm回调,ack=true
+        exchange到queue成功,则不回调return
+        exchange到queue失败,则回调return(需设置mandatory=true,否则不回回调,消息就丢了)
+        */
+        //自动创建的ConnectionFactory无法完成事件的回调，即没有设置下面的代码
         connectionFactory.setPublisherConfirms(true);
         return connectionFactory;
     }
 
-    /*
-    如果消息没有到exchange,则confirm回调,ack=false
-    如果消息到达exchange,则confirm回调,ack=true
-    exchange到queue成功,则不回调return
-    exchange到queue失败,则回调return(需设置mandatory=true,否则不回回调,消息就丢了)
-    */
     // 配置接收端属性
     @Bean
     public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(
@@ -147,6 +148,8 @@ public class RabbitConfig {
         如果未ack的消息数达到了prefetch_count的个数，则不符合要求。当挑选到合适的消费者后，中断后续的遍历。
         */
         factory.setPrefetchCount(5);
+        // ack，这意味着当你从消息队列取出一个消息时，ack自动发送，mq就会将消息删除。
+        // 而为了保证消息的正确处理，我们需要将消息处理修改为手动确认的方式
         factory.setAcknowledgeMode(AcknowledgeMode.AUTO);// 确认模式：自动，默认
         factory.setMessageConverter(new Jackson2JsonMessageConverter());// 接收端类型转化pojo,需要序列化
         return factory;
@@ -156,17 +159,21 @@ public class RabbitConfig {
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     //必须是prototype类型
-    public RabbitTemplate rabbitTemplate() {
-        RabbitTemplate template = new RabbitTemplate(connectionFactory());
+    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
+        RabbitTemplate template = new RabbitTemplate(connectionFactory);
         template.setMessageConverter(new Jackson2JsonMessageConverter());// 发送端类型转化pojo,需要序列化
+        /**
+         * Mandatory为true时,消息通过交换器无法匹配到队列会返回给生产者
+         *          为false时,匹配不到会直接被丢弃
+         */
         template.setMandatory(true);
         return template;
     }
 
     @Bean
-    public SimpleMessageListenerContainer messageContainer() {
+    public SimpleMessageListenerContainer messageContainer(ConnectionFactory connectionFactory) {
         //加载处理消息A的队列
-        SimpleMessageListenerContainer container = new SimpleMessageListenerContainer(connectionFactory());
+        SimpleMessageListenerContainer container = new SimpleMessageListenerContainer(connectionFactory);
         //设置接收多个队列里面的消息，这里设置接收队列A
         //假如想一个消费者处理多个队列里面的信息可以如下设置：
         //container.setQueues(queueText(), queueLink(), queueMarkDown());
@@ -195,10 +202,6 @@ public class RabbitConfig {
 //						throw new Exception();
 //					}
 //                    if (true) throw new Exception();
-                    //deliveryTag:该消息的index
-                    //multiple：是否批量.true:将一次性ack所有小于deliveryTag的消息。
-                    // false只确认当前一个消息收到，true确认所有consumer获得的消息
-
                     String json = new String(message.getBody(), StandardCharsets.UTF_8);
                     TextRequestVo textRequestVo = JSONObject.parseObject(json, TextRequestVo.class);
                     OapiRobotSendResponse response = dingTalkBiz.sendText(dingTalkLinkUrl, textRequestVo);
@@ -213,6 +216,9 @@ public class RabbitConfig {
                             dingTalkBiz.sendTextIntoDelayQueue(message, textRequestVo);
                         }
                     }
+                    //deliveryTag:该消息的index
+                    //multiple：是否批量.true:将一次性ack所有小于deliveryTag的消息。
+                    // false只确认当前一个消息收到，true确认所有consumer获得的消息
                     channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
                 } catch (Exception e) {
                     e.printStackTrace();
