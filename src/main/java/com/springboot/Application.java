@@ -6,7 +6,6 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
@@ -28,7 +27,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 //@MapperScan()
 
 @EntityScan(basePackages={"com.springboot.repository.entity"})
-public class App extends SpringBootServletInitializer {
+public class Application extends SpringBootServletInitializer {
     /**
      * 修改启动类，继承 SpringBootServletInitializer 并重写 configure 方法
      *
@@ -36,9 +35,9 @@ public class App extends SpringBootServletInitializer {
      */
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
-        return builder.sources(App.class);
+        return builder.sources(Application.class);
     }
     public static void main(String[] args) {
-        SpringApplication.run(App.class, args);
+        SpringApplication.run(Application.class, args);
     }
 }
