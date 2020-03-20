@@ -18,14 +18,17 @@ public class UserEntity implements Serializable{
     @GeneratedValue
     private Long id;
 
-    @Column(name = "user_name", length = 32, nullable = false)
-    private String userName;
-
     @Column(name = "account", length = 16, nullable = false)
     private String account;
 
+    @Column(name = "user_name", length = 32, nullable = false)
+    private String userName;
+
     @Column(name = "password", length = 16, nullable = false)
     private String password;
+
+    @Column(name = "perms", length = 16, nullable = false)
+    private String perms;
 
     @Column(name = "remark", length = 256)
     private String remark;

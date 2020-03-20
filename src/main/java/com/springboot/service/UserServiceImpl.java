@@ -3,21 +3,13 @@ package com.springboot.service;
 import com.springboot.Utils.PageInfo;
 import com.springboot.Utils.RestResult;
 import com.springboot.constant.RestResultCodeEnum;
-import com.springboot.repository.Dao.UserDao;
-import com.springboot.repository.UserSpecification;
 import com.springboot.repository.entity.UserEntity;
+import com.springboot.service.biz.UserBiz;
 import com.springboot.service.impl.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -27,66 +19,49 @@ import java.util.List;
 @Transactional
 public class UserServiceImpl implements UserService {
     @Autowired
-    UserDao helloDao;
+    UserBiz userBiz;
 
-    @Autowired
-    UserRedisServiceImpl userRedisService;
 
-//    @CacheEvict(value="userCache", allEntries=true)
     @Override
     public RestResult<UserEntity> save(UserEntity hello) {
-        UserEntity result = (UserEntity) helloDao.save(hello);
-        userRedisService.put("user_"+ hello.getId(), hello, -1);
-        UserEntity  userEntity = userRedisService.get("user_"+ hello.getId());
+        UserEntity result = userBiz.save(hello);
         return new RestResult(RestResultCodeEnum.SUCCESS.code(), null, result);
     }
 
-//    @CacheEvict(value="userCache", allEntries=true)
     @Override
     public RestResult<UserEntity> update(UserEntity hello) {
-        UserEntity result = (UserEntity) helloDao.saveAndFlush(hello);
+        UserEntity result = userBiz.update(hello);
         return new RestResult(RestResultCodeEnum.SUCCESS.code(), null, result);
     }
 
-//    @Cacheable(value="userCache") //缓存,这里没有指定key.
     @Override
     public RestResult<UserEntity> getById(Long id) {
-        UserEntity result = (UserEntity) helloDao.findOne(id);
+        UserEntity result = userBiz.findById(id);
         return new RestResult(RestResultCodeEnum.SUCCESS.code(), null, result);
     }
 
+    @Override
+    public RestResult<UserEntity> findOneByAccount(String account) {
+        UserEntity result = userBiz.findOneByAccount(account);
+        return new RestResult(RestResultCodeEnum.SUCCESS.code(), null, result);
+    }
 
-//    @Cacheable(value="userCache")
     @Override
     public RestResult<List<UserEntity>> list() {
-        List<UserEntity> result = helloDao.findAll();
+        List<UserEntity> result = userBiz.list();
         return new RestResult(RestResultCodeEnum.SUCCESS.code(), null, result);
     }
 
-    //allEntries 清空缓存所有属性 确保更新后缓存刷新
-//    @CacheEvict(value="userCache", allEntries=true)
     @Override
     public RestResult delete(Long id) {
-        helloDao.delete(id);
+        userBiz.delete(id);
         return new RestResult(RestResultCodeEnum.SUCCESS.code(), null);
     }
 
-//    @Cacheable(value="userCache", key="#p0+-+#p1")
     @Override
     public RestResult<List<UserEntity>> page(Integer pageNumber, Integer pageSize, String name) {
-        List<UserEntity> list = new ArrayList<UserEntity>();
-        UserEntity userEntity = new UserEntity();
-        if(!StringUtils.isEmpty(name)){
-            userEntity.setUserName(name);
-        }
-        Sort sort = new Sort(Sort.Direction.DESC, "id");
-        Pageable pageable = new PageRequest(pageNumber - 1, pageSize, sort);
-        Page<UserEntity> page = helloDao.findAll(new UserSpecification(userEntity), pageable);
-        PageInfo pageInfo = new PageInfo(pageNumber, pageSize, page.getTotalElements());
-        Iterator<UserEntity> iterable = page.iterator();
-        while(iterable.hasNext()){
-            list.add(iterable.next());
-        }
+        PageInfo pageInfo = PageInfo.builder().pageNumber(pageNumber).pageSize(pageSize).build();
+        List<UserEntity> list = userBiz.page(pageInfo, name);
         return new RestResult(RestResultCodeEnum.SUCCESS.code(), null, pageInfo, list);
     }
 }

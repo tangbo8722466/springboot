@@ -24,6 +24,9 @@ public class UserSpecification implements Specification<UserEntity> {
     @Override
     public Predicate toPredicate(Root<UserEntity> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
         List<Predicate> list = new ArrayList<Predicate>();
+        if (!StringUtils.isEmpty(userEntity.getAccount())) {
+            list.add(criteriaBuilder.equal(root.get("account"), userEntity.getAccount()));
+        }
         if (!StringUtils.isEmpty(userEntity.getUserName())) {
             list.add(criteriaBuilder.equal(root.get("userName"), userEntity.getUserName()));
         }

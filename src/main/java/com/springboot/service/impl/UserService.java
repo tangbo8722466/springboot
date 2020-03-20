@@ -12,6 +12,7 @@ public interface UserService {
     RestResult<UserEntity> save(UserEntity hello);
     RestResult<UserEntity> update(UserEntity hello);
     RestResult<UserEntity> getById(Long id);
+    RestResult<UserEntity> findOneByAccount(String account);
     RestResult<List<UserEntity>> list();
     RestResult delete(Long id);
     RestResult<List<UserEntity>> page(Integer pageNumber, Integer pageSize, String name);

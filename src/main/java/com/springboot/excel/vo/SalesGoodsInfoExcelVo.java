@@ -3,7 +3,7 @@ package com.springboot.excel.vo;
 import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.metadata.BaseRowModel;
-import com.cdzg.admin.util.excel.PurchasePlace;
+import com.springboot.excel.PurchasePlace;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,5 +1,6 @@
 package com.springboot.controller;
 
+import com.springboot.Utils.MD5Utils;
 import com.springboot.Utils.RestResult;
 import com.springboot.constant.RestResultCodeEnum;
 import com.springboot.Utils.ShareMethodUtils;
@@ -46,7 +47,8 @@ public class UserManagerController {
 
     @RequestMapping(value = "/user",  method = RequestMethod.POST)
     RestResult<UserEntity> create(@Valid @RequestBody UserCreateVo userCreateVo) {
-        userService.health();
+        //密码MD5加密
+        userCreateVo.setAccount(MD5Utils.MD5Encode(userCreateVo.getPassword(), "UTF-8"));
         return userService.save(new UserEntity().builder().userName(userCreateVo.getUserName()).account(userCreateVo.getAccount()).password(userCreateVo.getPassword()).remark(userCreateVo.getRemark()).build());
     }
 
