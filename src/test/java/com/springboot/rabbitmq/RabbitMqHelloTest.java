@@ -12,18 +12,18 @@ public class RabbitMqHelloTest {
  
 //    @Autowired
 //    private HelloSender helloSender;
-//
-//    @Test
-//    public void hello() throws Exception {
-//        helloSender.send(1);
-//    }
-//
-//    @Test
-//    public void oneToMany() throws Exception {
+
+    @Test
+    public void hello() throws Exception {
+       // helloSender.send(1);
+    }
+
+    @Test
+    public void oneToMany() throws Exception {
 //        for (int i=0;i<100;i++){
 //            helloSender.send(i);
 //        }
-//    }
+    }
 
 //    @Test
 //    public void user() throws Exception {
