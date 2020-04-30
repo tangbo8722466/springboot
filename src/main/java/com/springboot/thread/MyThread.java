@@ -20,14 +20,27 @@ public class MyThread implements Runnable{
     @Override
     public void run(){
         String threadName = Thread.currentThread().getName();
-        log.info("MyThreadForResult "+ threadName +" runing ...");
-        log.info("MyThreadForResult "+ threadName +" sleep start ...");
+        log.info("MyThread "+ threadName +" runing ...");
+        log.info("MyThread "+ threadName +" sleep start ...");
         try {
-            Thread.currentThread().sleep(count * 1000);
+            if (count % 2 == 0) {
+                for (int i = 0; i < count; i++) {
+                    if (Thread.currentThread().isInterrupted()) {
+                        log.info("MyThread " + threadName + " interrupt end ...");
+                        return;
+                    }
+                    Thread.currentThread().sleep(1000);
+                }
+            }
+            else{
+                Thread.currentThread().sleep(count * 1000);
+            }
         } catch (InterruptedException e) {
+            log.info("MyThread " + threadName + " interrupt exception end ...");
             e.printStackTrace();
+            return;
         }
-        log.info("MyThreadForResult "+ threadName +" sleep end ...");
+        log.info("MyThread "+ threadName +" sleep end ...");
         if (count % 2 == 0) {
             throw new RuntimeException(threadName + "Count:["+count+"]运行异常");
         }

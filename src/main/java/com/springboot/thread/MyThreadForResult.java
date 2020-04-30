@@ -1,5 +1,6 @@
 package com.springboot.thread;
 
+import groovy.transform.ThreadInterrupt;
 import lombok.extern.log4j.Log4j;
 
 import java.util.concurrent.Callable;
@@ -24,7 +25,14 @@ public class MyThreadForResult implements Callable<String> {
         String threadName = Thread.currentThread().getName();
         log.info("MyThreadForResult "+ threadName +" runing ...");
         log.info("MyThreadForResult "+ threadName +" sleep start ...");
-        Thread.currentThread().sleep(count * 1000);
+        for (int i=0; i<count; i++) {
+            if (Thread.currentThread().isInterrupted()) {
+                log.info("MyThreadForResult "+ threadName +" interrupt end ...");
+                //throw new InterruptedException();
+                return threadName + "Count:["+count+"]运行中断";
+            }
+            Thread.currentThread().sleep(1000);
+        }
         log.info("MyThreadForResult "+ threadName +" sleep end ...");
         if (count % 2 == 0) {
             throw new Exception(threadName + "Count:["+count+"]运行异常");
