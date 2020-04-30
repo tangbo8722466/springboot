@@ -69,7 +69,10 @@ public class MyThreadPool {
         }
     }
 
-    public static void testScheduledThreadPool(ScheduledExecutorService executorService, int size) {
+    @Test
+    public void testScheduledThreadPool() {
+        int size = 10;
+        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(5);
         for (int i=1; i <= size; i++) {
             if (i % 2 == 0) {
                 //延时执行
@@ -80,27 +83,25 @@ public class MyThreadPool {
                 executorService.scheduleAtFixedRate(new MyThread(i), 0, 1000, TimeUnit.MILLISECONDS);
             }
         }
-//        //shutdown方法：平滑的关闭ExecutorService，当此方法被调用时，ExecutorService停止接收新的任务并且等待已经提交的任务（包含提交正在执行和提交未执行）执行完成。
-//        //当所有提交任务执行完毕，线程池即被关闭。
-//        executorService.shutdown();
-//        //当使用awaitTermination时，主线程会处于一种等待的状态，等待线程池中所有的线程都运行完毕后才继续运行。
-//        //awaitTermination方法：接收人timeout和TimeUnit两个参数，用于设定超时时间及单位。当等待超过设定时间时，会监测ExecutorService是否已经关闭
-//        try {
-//            //等待5S，判断线程池是否关闭
-//            if (executorService.awaitTermination(60, TimeUnit.SECONDS)) {
-//                log.info("testScheduledThreadPool run success ...");
-//            } else {
-//                //关闭超时线程
-//                log.info("testScheduledThreadPool run timeout ...");
-//            }
-//        } catch (InterruptedException e) {
-//            log.info("testScheduledThreadPool interrupted ...");
-//            e.printStackTrace();
-//        } finally {
-//            //用shutdown + awaitTermination关闭线程池是最标准的方式。但是这样不能确保子线程按照预想的那样退出。
-//            //因此还需要 executorService.shutdownNow();来主动中断所有子线程。
-//            executorService.shutdownNow();
-//        }
+        //shutdown方法：平滑的关闭ExecutorService，当此方法被调用时，ExecutorService停止接收新的任务并且等待已经提交的任务（包含提交正在执行和提交未执行）执行完成。
+        //当所有提交任务执行完毕，线程池即被关闭。
+        //executorService.shutdown();
+        //当使用awaitTermination时，主线程会处于一种等待的状态，等待线程池中所有的线程都运行完毕后才继续运行。
+        //awaitTermination方法：接收人timeout和TimeUnit两个参数，用于设定超时时间及单位。当等待超过设定时间时，会监测ExecutorService是否已经关闭
+        try {
+            //等待5S，判断线程池是否关闭
+           while(!executorService.awaitTermination(5, TimeUnit.SECONDS)) {
+                log.info("waiting testScheduledThreadPool to stop ...");
+           }
+           log.info("waiting testScheduledThreadPool run ...");
+        } catch (InterruptedException e) {
+            log.info("testScheduledThreadPool interrupted ...");
+            e.printStackTrace();
+        } finally {
+            //用shutdown + awaitTermination关闭线程池是最标准的方式。但是这样不能确保子线程按照预想的那样退出。
+            //因此还需要 executorService.shutdownNow();来主动中断所有子线程。
+            executorService.shutdownNow();
+        }
     }
 
     @Test
@@ -121,10 +122,4 @@ public class MyThreadPool {
         testThreadPool(executorService, 10);
     }
 
-    @Test
-    public void testScheduled() throws InterruptedException {
-        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(5);
-        testScheduledThreadPool(executorService, 10);
-        //Thread.sleep(120 * 1000);
-    }
 }
