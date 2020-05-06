@@ -11,7 +11,7 @@ import java.util.Optional;
  **/
 public class LazySingleton {
     //多线程触发，内存同步
-    private volatile LazySingleton instance = null;
+    private static volatile LazySingleton instance = null;
     private LazySingleton() {
 
     }
@@ -20,7 +20,7 @@ public class LazySingleton {
      * 获取实例，防止多线程3+
      * @return
      */
-    public synchronized LazySingleton getInstance(){
+    public static synchronized LazySingleton getInstance(){
       instance = Optional.ofNullable(instance).orElseGet(() -> new LazySingleton());
       return instance;
     }
