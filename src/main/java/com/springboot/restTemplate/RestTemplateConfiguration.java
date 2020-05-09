@@ -5,6 +5,8 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.ClientHttpRequestFactory;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
@@ -21,16 +23,29 @@ import java.util.List;
  * 2.设置响应类型和内容类型
  */
 @Configuration
-public class RestConfiguration {
+public class RestTemplateConfiguration {
     @Autowired
     private RestTemplateBuilder builder;
 
-    @Bean
-    public RestTemplate restTemplate() {
+    /**
+     * 设置超时时间
+     * @return
+     */
+    @Bean("httpFactory")
+    public ClientHttpRequestFactory simpleClientHttpRequestFactory() {
+        SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
+        factory.setConnectTimeout(15000);
+        factory.setReadTimeout(5000);
+        return factory;
+    }
+
+    @Bean(name = "restTemplate")
+    public RestTemplate restTemplate(ClientHttpRequestFactory httpFactory) {
         RestTemplate restTemplate = builder
                 .additionalMessageConverters(new WxMappingJackson2HttpMessageConverter())
+                .requestFactory(httpFactory)
                 .build();
-        //设置请求字符未utf-8
+        //设置请求字符为utf-8
         restTemplate.getMessageConverters().forEach(httpMessageConverter -> {
             if (httpMessageConverter instanceof StringHttpMessageConverter) {
                 ((StringHttpMessageConverter) httpMessageConverter).setDefaultCharset(StandardCharsets.UTF_8);
@@ -39,6 +54,9 @@ public class RestConfiguration {
         return restTemplate;
     }
 
+    /**
+     * 适配响应为字符串
+     */
     class WxMappingJackson2HttpMessageConverter extends MappingJackson2HttpMessageConverter {
         //设置响应适配
         WxMappingJackson2HttpMessageConverter() {
@@ -50,4 +68,28 @@ public class RestConfiguration {
             setSupportedMediaTypes(mediaTypes);// tag6
         }
     }
+    @Bean(name = "httpsFactory")
+    public ClientHttpRequestFactory simpleClientHttpsRequestFactory() {
+        SimpleClientHttpRequestFactory factory = new SSLClientHttpRequestFactory();
+        factory.setConnectTimeout(15000);
+        factory.setReadTimeout(5000);
+        return factory;
+    }
+
+
+    @Bean(name = "httpsRestTemplate")
+    public RestTemplate httpsRestTemplate(ClientHttpRequestFactory httpsFactory){
+        RestTemplate restTemplate = builder
+                .additionalMessageConverters(new WxMappingJackson2HttpMessageConverter())
+                .requestFactory(httpsFactory)
+                .build();
+        //设置请求字符为utf-8
+        restTemplate.getMessageConverters().forEach(httpMessageConverter -> {
+            if (httpMessageConverter instanceof StringHttpMessageConverter) {
+                ((StringHttpMessageConverter) httpMessageConverter).setDefaultCharset(StandardCharsets.UTF_8);
+            }
+        });
+        return restTemplate;
+    }
+
 }

@@ -3,11 +3,12 @@ package com.springboot;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
+import javax.annotation.PostConstruct;
+import java.util.TimeZone;
 
 /**
  * Created by tangbo on 2018/1/28 0028.
@@ -26,18 +27,27 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 //@ComponentScan(basePackages={"com.springboot"})
 //@MapperScan()
 
-@EntityScan(basePackages={"com.springboot.repository.entity"})
-public class Application extends SpringBootServletInitializer {
-    /**
-     * 修改启动类，继承 SpringBootServletInitializer 并重写 configure 方法
-     *
-     *
-     */
-    @Override
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
-        return builder.sources(Application.class);
+@EntityScan(basePackages = {"com.springboot.repository.entity"})
+public class Application {
+    //    /**
+//     * 修改启动类，继承 SpringBootServletInitializer 并重写 configure 方法
+//     *
+//     *
+//     */
+//    @Override
+//    protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
+//        return builder.sources(Application.class);
+//    }
+//    public static void main(String[] args) {
+//        SpringApplication.run(Application.class, args);
+//    }
+    @PostConstruct
+    void started() {
+        TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
     }
+
     public static void main(String[] args) {
+        TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
         SpringApplication.run(Application.class, args);
     }
 }

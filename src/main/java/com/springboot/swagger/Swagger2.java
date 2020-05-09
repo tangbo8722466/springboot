@@ -9,6 +9,8 @@ import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 
+import java.util.Collections;
+
 /**
  * Created by tangbo on 2018/1/30 0030.
  */
@@ -18,6 +20,7 @@ public class Swagger2 {
     @Bean
     public Docket createRestApi() {
         return new Docket(DocumentationType.SWAGGER_2)
+                .protocols(Collections.singleton("https"))
                 .apiInfo(apiInfo())
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.springboot.controller"))
