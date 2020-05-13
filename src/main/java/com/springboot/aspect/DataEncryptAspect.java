@@ -1,11 +1,9 @@
 package com.springboot.aspect;
 
-import com.framework.utils.core.api.ApiConst;
-import com.framework.utils.core.api.ApiResponse;
-import com.framework.utils.core.bean.PageResponse;
 import com.springboot.Utils.DataEncryptUtils;
 import com.springboot.Utils.PageInfo;
 import com.springboot.Utils.RestResult;
+import com.springboot.constant.RestResultCodeEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -76,7 +74,7 @@ public class DataEncryptAspect {
             Field codeField = cls.getDeclaredField("code");
             codeField.setAccessible(true);
             int code = (int)codeField.get(obj);
-            if (ApiConst.Code.CODE_SUCCESS.code() != code){
+            if (RestResultCodeEnum.SUCCESS.code() != code){
                 return obj;
             }
             Field dataField = cls.getDeclaredField("data");
