@@ -59,9 +59,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public RestResult<List<UserEntity>> page(Integer pageNumber, Integer pageSize, String name) {
+    public RestResult<PageInfo<UserEntity>> page(Integer pageNumber, Integer pageSize, String name) {
         PageInfo pageInfo = PageInfo.builder().pageNumber(pageNumber).pageSize(pageSize).build();
-        List<UserEntity> list = userBiz.page(pageInfo, name);
-        return new RestResult(RestResultCodeEnum.SUCCESS.code(), null, pageInfo, list);
+        PageInfo<UserEntity> result = userBiz.page(pageInfo, name);
+        return new RestResult(RestResultCodeEnum.SUCCESS.code(), null, result);
     }
 }

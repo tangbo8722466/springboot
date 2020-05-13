@@ -1,5 +1,6 @@
 package com.springboot.service.impl;
 
+import com.springboot.Utils.PageInfo;
 import com.springboot.Utils.RestResult;
 import com.springboot.repository.entity.UserEntity;
 
@@ -15,7 +16,7 @@ public interface UserService {
     RestResult<UserEntity> findOneByAccount(String account);
     RestResult<List<UserEntity>> list();
     RestResult delete(Long id);
-    RestResult<List<UserEntity>> page(Integer pageNumber, Integer pageSize, String name);
+    RestResult<PageInfo<UserEntity>> page(Integer pageNumber, Integer pageSize, String name);
     default boolean health(){
         return true;
     }

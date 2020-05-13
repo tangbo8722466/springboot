@@ -18,7 +18,6 @@ public class RestResult<T> implements Serializable{
     private static final long serialVersionUID = 1794095672411145784L;
     private int code;
     private String errorMsg;
-    private PageInfo pageInfo;
     private T data;
 
     public boolean isSuccess(){
@@ -30,22 +29,12 @@ public class RestResult<T> implements Serializable{
         this.errorMsg = errorMsg;
     }
 
-    public RestResult(int code, String errorMsg, T data) {
-        this.code = code;
-        this.errorMsg = errorMsg;
-        this.data = data;
-    }
-
     public static <T> RestResult<T> buildSuccessResponse(){
-        return new RestResult(RestResultCodeEnum.SUCCESS.code(),RestResultCodeEnum.SUCCESS.msg(), new PageInfo(), new Empty());
+        return new RestResult(RestResultCodeEnum.SUCCESS.code(),RestResultCodeEnum.SUCCESS.msg(),  new Empty());
     }
 
     public static <T> RestResult<T> buildSuccessResponse(T data){
-        return new RestResult<>(RestResultCodeEnum.SUCCESS.code(),RestResultCodeEnum.SUCCESS.msg(), new PageInfo(), data);
-    }
-
-    public static <T> RestResult<T> buildSuccessResponse(PageInfo pageInfo, T data){
-        return new RestResult<>(RestResultCodeEnum.SUCCESS.code(),RestResultCodeEnum.SUCCESS.msg(), pageInfo, data);
+        return new RestResult<>(RestResultCodeEnum.SUCCESS.code(),RestResultCodeEnum.SUCCESS.msg(), data);
     }
 
     public static <T> RestResult<T> buildFailResponse(){
@@ -61,10 +50,6 @@ public class RestResult<T> implements Serializable{
     }
 
     public static <T> RestResult<T> buildFailResponse(int code, String errorMsg, T data){
-        return new RestResult<>(code, errorMsg, new PageInfo(), data);
-    }
-
-    public static <T> RestResult<T> buildFailResponse(int code, String errorMsg, PageInfo pageInfo, T data){
-        return new RestResult<>(code, errorMsg, pageInfo, data);
+        return new RestResult<>(code, errorMsg, data);
     }
 }

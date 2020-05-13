@@ -69,7 +69,7 @@ public class UserBiz{
     }
 
 //    @Cacheable(value="userCache", key="#p0+-+#p1")
-    public List<UserEntity> page(PageInfo pageInfo, String userName) {
+    public PageInfo<UserEntity> page(PageInfo pageInfo, String userName) {
         List<UserEntity> list = new ArrayList<UserEntity>();
         UserEntity userEntity = new UserEntity();
         userEntity.setUserName(userName);
@@ -81,6 +81,7 @@ public class UserBiz{
         while(iterable.hasNext()){
             list.add(iterable.next());
         }
-        return list;
+        pageInfo.setItems(list);
+        return pageInfo;
     }
 }

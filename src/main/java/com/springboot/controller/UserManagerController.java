@@ -2,6 +2,7 @@ package com.springboot.controller;
 
 import com.springboot.Utils.MD5Utils;
 import com.springboot.Utils.RestResult;
+import com.springboot.aspect.DataEncryptAnno;
 import com.springboot.constant.RestResultCodeEnum;
 import com.springboot.Utils.ShareMethodUtils;
 import com.springboot.Utils.UserDefine;
@@ -77,6 +78,7 @@ public class UserManagerController {
         return userService.update(entity);
     }
 
+    @DataEncryptAnno //数据脱敏
     @RequestMapping(value = "/user",  method = RequestMethod.GET)
     RestResult<List<UserEntity>> getAll() {
         return userService.list();
@@ -92,6 +94,7 @@ public class UserManagerController {
         return userService.delete(id);
     }
 
+    @DataEncryptAnno //数据脱敏
     @RequestMapping(value = "/user/page",  method = RequestMethod.GET)
     RestResult page(@RequestParam("pageNumber") Integer pageNumber, @RequestParam("pageSize") Integer pageSize, @RequestParam(name = "name", required = false) String name) {
         return userService.page(pageNumber, pageSize, name);
