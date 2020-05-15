@@ -12,6 +12,10 @@ public class HungrySingleton{
     //private static volatile HungrySingleton instance = new HungrySingleton();
     private static HungrySingleton instance = new HungrySingleton();
 
+    private HungrySingleton(){
+
+    }
+
     public static HungrySingleton getInstance(){
         return instance;
     }

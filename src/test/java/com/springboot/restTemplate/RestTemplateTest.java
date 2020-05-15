@@ -8,9 +8,17 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @ClassName RestTemplateTest
@@ -33,7 +41,16 @@ public class RestTemplateTest {
 
     @Test
     public void testHttp(){
-        ResponseEntity<String> responseEntity1 = restTemplate.getForEntity("http://www.baidu.com", String.class);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON_UTF8);
+        httpHeaders.setAccept(Stream.of(MediaType.APPLICATION_JSON_UTF8).collect(Collectors.toList()));
+        httpHeaders.set("version", "1.0.0");
+
+        JSONObject body = new JSONObject();
+        body.put("orderSn","1202047258163078526");
+
+        HttpEntity httpEntity = new HttpEntity<>(body, httpHeaders);
+        ResponseEntity<String> responseEntity1 = restTemplate.postForEntity("https://test.cdzghome.com:8400/commonPayConfig/queryOrderPayStateNoToken", httpEntity, String.class);
         log.info(responseEntity1.getStatusCode() + "，" +responseEntity1.getStatusCodeValue());
         log.info(responseEntity1.getBody());
         /**
@@ -57,17 +74,26 @@ public class RestTemplateTest {
         /**
          * java.lang.RuntimeException: An instance of HttpsURLConnection is expected
          */
-        ResponseEntity<String> responseEntity1 = httpsRestTemplate.getForEntity("http://www.baidu.com", String.class);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON_UTF8);
+        httpHeaders.setAccept(Stream.of(MediaType.APPLICATION_JSON_UTF8).collect(Collectors.toList()));
+        httpHeaders.set("version", "1.0.0");
+
+        JSONObject body = new JSONObject();
+        body.put("orderSn","1202047258163078526");
+
+        HttpEntity httpEntity = new HttpEntity<>(body, httpHeaders);
+        ResponseEntity<String> responseEntity1 = httpsRestTemplate.postForEntity("https://test.cdzghome.com:8400/commonPayConfig/queryOrderPayStateNoToken", httpEntity, String.class);
         log.info(responseEntity1.getStatusCode() + "，" +responseEntity1.getStatusCodeValue());
         log.info(responseEntity1.getBody());
 
-        ResponseEntity<RestResult> responseEntity2 = httpsRestTemplate.getForEntity("https://localhost:8443/springboot/v1/user", RestResult.class);
-        log.info(responseEntity2.getStatusCode() + "，" +responseEntity2.getStatusCodeValue());
-        log.info(JSONObject.toJSONString(responseEntity2.getBody()));
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        ResponseEntity<RestResult> responseEntity2 = httpsRestTemplate.getForEntity("https://localhost:8443/springboot/v1/user", RestResult.class);
+//        log.info(responseEntity2.getStatusCode() + "，" +responseEntity2.getStatusCodeValue());
+//        log.info(JSONObject.toJSONString(responseEntity2.getBody()));
+//        try {
+//            Thread.sleep(10000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
     }
 }
