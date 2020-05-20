@@ -1,4 +1,8 @@
-package com.springboot.Utils;
+package com.springboot.Utils.encrypt.Rsa;
+
+import com.springboot.Utils.encrypt.Base64.Base64Utils;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.security.Key;
@@ -35,6 +39,7 @@ import javax.crypto.Cipher;
  * @date 2012-4-26
  * @version 1.0
  */
+@Slf4j
 public class RSAUtils {
 
     /** */

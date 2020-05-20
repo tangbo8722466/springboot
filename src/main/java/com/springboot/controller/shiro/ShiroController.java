@@ -1,6 +1,6 @@
 package com.springboot.controller.shiro;
 
-import com.springboot.Utils.MD5Utils;
+import com.springboot.Utils.encrypt.Md5.MD5Utils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;

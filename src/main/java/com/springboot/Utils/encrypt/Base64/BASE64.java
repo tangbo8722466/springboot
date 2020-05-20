@@ -1,4 +1,4 @@
-package com.springboot.Utils;
+package com.springboot.Utils.encrypt.Base64;
 
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;

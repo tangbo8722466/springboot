@@ -1,6 +1,5 @@
 package com.springboot.shiro;
 
-import com.springboot.Utils.MD5Utils;
 import com.springboot.repository.Dao.UserDao;
 import com.springboot.repository.entity.UserEntity;
 import com.springboot.service.biz.UserBiz;
@@ -14,7 +13,6 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 

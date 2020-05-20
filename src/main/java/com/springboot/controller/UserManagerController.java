@@ -1,6 +1,6 @@
 package com.springboot.controller;
 
-import com.springboot.Utils.MD5Utils;
+import com.springboot.Utils.encrypt.Md5.MD5Utils;
 import com.springboot.Utils.RestResult;
 import com.springboot.aspect.DataEncryptAnno;
 import com.springboot.constant.RestResultCodeEnum;

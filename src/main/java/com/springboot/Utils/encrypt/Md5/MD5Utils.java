@@ -1,4 +1,4 @@
-package com.springboot.Utils;
+package com.springboot.Utils.encrypt.Md5;
 
 import java.security.MessageDigest;
 

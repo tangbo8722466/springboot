@@ -1,9 +1,9 @@
-package com.springboot.RSA;
+package com.springboot.Utils.encrypt.Rsa;
 
 import java.util.Map;
 
-import com.springboot.Utils.Base64Utils;
-import com.springboot.Utils.RSAUtils;
+import com.springboot.Utils.encrypt.Base64.Base64Utils;
+import com.springboot.Utils.encrypt.Rsa.RSAUtils;
 import org.junit.Test;
 
 public class RSATester {
@@ -40,7 +40,8 @@ public class RSATester {
 
     }
 
-    static void testSign() throws Exception {
+    @Test
+    public void testSign() throws Exception {
         System.err.println("私钥加密——公钥解密");
         String source = "32232";
         System.out.println("原文字：\r\n" + source);
@@ -57,7 +58,8 @@ public class RSATester {
         System.err.println("验证结果:\r" + status);
     }
 
-    static void test() throws Exception {
+    @Test
+    public void test() throws Exception {
         System.err.println("公钥加密——私钥解密");
         String source = "这是一行没有任何意义的文字，你看完了等于没看，不是吗？";
         System.out.println("\r加密前文字：\r\n" + source);
