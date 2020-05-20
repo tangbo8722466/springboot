@@ -10,9 +10,11 @@ import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -20,7 +22,7 @@ import java.util.stream.Stream;
 /**
  * @ClassName DataencryptAspect
  * @Author sangfor for tangbo
- * @Description //TODO
+ * @Description 数据脱敏
  * @Date 2020/5/11 15:24
  * @Version 1.0.0
  **/
@@ -38,7 +40,7 @@ public class DataEncryptAspect {
     private static List<String> uidFieldNames = Stream.of("uid", "memberId").collect(Collectors.toList());
 
     private static List<String> bankCardFieldNames = Stream.of("bankCardNo", "accountNo", "oBankAccountNo","rootAccNo",
-            "subAccNo", "vAccNo", "recAccount", "payAccount", "bandCardId").collect(Collectors.toList());
+            "subAccNo", "vAccNo", "recAccount", "payAccount", "bandCardId", "vAccountNo", "eAccountNo").collect(Collectors.toList());
 
     //设置切入点
     @Pointcut("@annotation(com.springboot.aspect.DataEncryptAnno)")
@@ -65,8 +67,15 @@ public class DataEncryptAspect {
 
     @AfterReturning(pointcut = "encrypt()", returning = "obj")
     public Object encryptResponse(Object obj){
+        List<String> fieldNames = composeField();
         if (! (obj instanceof RestResult)) {
-            return obj;
+            if (obj instanceof List) {
+                List list = (List)obj;
+                return DataEncryptAspect.responseListReflect(list, fieldNames);
+            }
+            else {
+                return DataEncryptAspect.responseReflect(obj, fieldNames);
+            }
         }
 
         Class cls = obj.getClass();
@@ -80,11 +89,11 @@ public class DataEncryptAspect {
             Field dataField = cls.getDeclaredField("data");
             dataField.setAccessible(true);
             Object data = dataField.get(obj);
-            List<String> fieldNames = composeField();
+
             if (data instanceof PageInfo) {
-                PageInfo pageInfo = (PageInfo) data;
-                pageInfo.setItems(DataEncryptAspect.responseListReflect(pageInfo.getItems(), fieldNames));
-                dataField.set(obj, pageInfo);
+                PageInfo pageResponse = (PageInfo) data;
+                pageResponse.setItems(DataEncryptAspect.responseListReflect(pageResponse.getItems(), fieldNames));
+                dataField.set(obj, pageResponse);
             }
             if (data instanceof List) {
                 dataField.set(obj, DataEncryptAspect.responseListReflect((List)data, fieldNames));
@@ -129,8 +138,16 @@ public class DataEncryptAspect {
     }
 
     public static Object responseReflect(Object obj, List<String> fieldNames){
+        if (obj == null){
+            return null;
+        }
         Class objClass = obj.getClass();
-        fieldNames.stream().forEach(fieldName -> {
+        List<String> encryptFieldNames = filterEncryptFields(objClass, fieldNames);
+        if (CollectionUtils.isEmpty(encryptFieldNames)) {
+            //无加密字段
+            return obj;
+        }
+        encryptFieldNames.stream().forEach(fieldName -> {
                 try {
                     Field field = objClass.getDeclaredField(fieldName);
                     field.setAccessible(true);
@@ -146,10 +163,18 @@ public class DataEncryptAspect {
     }
 
     public static List<Object> responseListReflect(List<Object> objs, List<String> fieldNames){
+        if (CollectionUtils.isEmpty(objs)){
+            return objs;
+        }
+        Class objClass = objs.get(0).getClass();
+        List<String> encryptFieldNames = filterEncryptFields(objClass, fieldNames);
+        if (CollectionUtils.isEmpty(encryptFieldNames)) {
+            //无加密字段
+            return objs;
+        }
         List<Object> objsReflect = new ArrayList<>();
         objs.stream().forEach(obj ->{
-            Class objClass = obj.getClass();
-            fieldNames.stream().forEach(fieldName -> {
+            encryptFieldNames.stream().forEach(fieldName -> {
                 try {
                     Field field = objClass.getDeclaredField(fieldName);
                     field.setAccessible(true);
@@ -183,5 +208,25 @@ public class DataEncryptAspect {
         }
 
         return content;
+    }
+
+    /**
+     * 过滤出需要加密的字段
+     * @param obj
+     * @param fieldNames
+     * @return
+     */
+    public static List<String> filterEncryptFields(Class obj, List<String> fieldNames){
+        List<String> encryptFields = new ArrayList<>();
+        Field[] fields = obj.getDeclaredFields();
+        if (fields.length == 0){
+            return encryptFields;
+        }
+        Arrays.stream(fields).forEach(field -> {
+            if (fieldNames.contains(field.getName())) {
+                encryptFields.add(field.getName());
+            }
+        });
+        return encryptFields;
     }
 }
