@@ -38,7 +38,7 @@ public class Base64Utils {
      * <p>
      * BASE64字符串解码为二进制数据
      * </p>
-     * 
+     *
      * @param base64
      * @return
      * @throws Exception
