@@ -3,6 +3,7 @@ package com.springboot.Utils.encrypt.AES;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -63,7 +64,10 @@ public class AESEncryptUtils {
             KeyGenerator keygen = KeyGenerator.getInstance("AES");
             //2.根据ecnodeRules规则初始化密钥生成器
             //生成一个128位的随机源,根据传入的字节数组
-            keygen.init(128, new SecureRandom(encodeRules.getBytes()));
+            SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
+            random.setSeed(encodeRules.getBytes(Charset.forName("UTF-8")));
+            keygen.init(128, random);
+            //keygen.init(128, new SecureRandom(encodeRules.getBytes()));
             //3.产生原始对称密钥
             SecretKey original_key = keygen.generateKey();
             //4.获得原始对称密钥的字节数组
@@ -116,7 +120,10 @@ public class AESEncryptUtils {
             KeyGenerator keygen = KeyGenerator.getInstance("AES");
             //2.根据ecnodeRules规则初始化密钥生成器
             //生成一个128位的随机源,根据传入的字节数组
-            keygen.init(128, new SecureRandom(encodeRules.getBytes()));
+            SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
+            random.setSeed(encodeRules.getBytes(Charset.forName("UTF-8")));
+            keygen.init(128, random);
+            //keygen.init(128, new SecureRandom(encodeRules.getBytes()));
             //3.产生原始对称密钥
             SecretKey original_key = keygen.generateKey();
             //4.获得原始对称密钥的字节数组
