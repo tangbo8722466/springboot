@@ -31,16 +31,14 @@ import java.util.stream.Stream;
 @Slf4j
 public class DataEncryptAspect {
 
-    private static List<String> idsFieldNames = Stream.of("idCard","idCardNo", "certifId", "certNo")
+    private static List<String> idsFieldNames = Stream.of("idCard")
             .collect(Collectors.toList());
 
-    private static List<String> phoneFieldNames = Stream.of("phoneNumber", "mobile", "phone", "mobileNo", "oBankMobileNo",
-            "phoneNum", "memberPhone").collect(Collectors.toList());
+    private static List<String> phoneFieldNames = Stream.of("phoneNumber").collect(Collectors.toList());
 
-    private static List<String> uidFieldNames = Stream.of("uid", "memberId").collect(Collectors.toList());
+    private static List<String> uidFieldNames = Stream.of("uid").collect(Collectors.toList());
 
-    private static List<String> bankCardFieldNames = Stream.of("bankCardNo", "accountNo", "oBankAccountNo","rootAccNo",
-            "subAccNo", "vAccNo", "recAccount", "payAccount", "bandCardId", "vAccountNo", "eAccountNo").collect(Collectors.toList());
+    private static List<String> bankCardFieldNames = Stream.of("bankCardNo").collect(Collectors.toList());
 
     //设置切入点
     @Pointcut("@annotation(com.springboot.aspect.DataEncryptAnno)")

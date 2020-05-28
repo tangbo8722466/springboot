@@ -1,5 +1,6 @@
 package com.springboot.service.biz;
 
+import com.alibaba.fastjson.JSONObject;
 import com.springboot.Utils.encrypt.AES.AESEncryptUtils;
 import com.springboot.Utils.encrypt.AES.AesCBC;
 import com.springboot.Utils.encrypt.Base64.Base64Utils;
@@ -28,8 +29,20 @@ public class DataEncryptBiz {
     @Value("${rsa.private.key:2}")
     private String rsaPrivateKey ;
 
+    @Value("${sign.public.key:3}")
+    private String signPublicKey;
+
+    @Value("${sign.private.key:4}")
+    private String signPrivateKey ;
+
+    /**
+     * 加签
+     * @param data json字符串
+     * @return
+     * @throws Exception
+     */
     public DataEncryptVo encryptData(String data) throws Exception {
-        String sign = RSAUtils.sign(data.getBytes(), rsaPrivateKey);
+        String sign = RSAUtils.sign(data.getBytes(), signPrivateKey);
         String signData = data + signTag + sign;
         //String dataBase64 = Base64Utils.encode(signData.getBytes());
         String aesKey = AESEncryptUtils.createSecretKey();
@@ -45,11 +58,12 @@ public class DataEncryptBiz {
         String[] signDataList = signData.split(signTag);
         String data = signDataList[0];
         String sign = signDataList[1];
-        boolean signResult = RSAUtils.verify(data.getBytes(), rsaPublicKey, sign);
+        boolean signResult = RSAUtils.verify(data.getBytes(), signPublicKey, sign);
         if (!signResult){
             throw new RuntimeException("验签失败");
         }
         log.info("验签成功");
         return data;
     }
+
 }

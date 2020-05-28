@@ -9,10 +9,11 @@ import javax.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
 @Service
-public abstract class RedisService<T> {
+public abstract class HashRedisService<T> {
 
     /**
      * 实例化 RedisTemplate对象

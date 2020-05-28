@@ -85,7 +85,7 @@ public class AesCBC {
             byte[] bytes = cipher.doFinal(content);
             return encodeBase64(bytes);
         } catch (Exception ex) {
-            throw new RuntimeException("");
+            throw new RuntimeException("数据加密失败，"+ ex.getMessage());
         }
     }
 
@@ -106,7 +106,7 @@ public class AesCBC {
                     createIVSpec(VI_STR));
             return new String(cipher.doFinal(data));
         } catch (Exception ex) {
-            throw new RuntimeException("");
+            throw new RuntimeException("数据解密失败，"+ ex.getMessage());
         }
     }
 

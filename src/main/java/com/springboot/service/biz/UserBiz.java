@@ -1,22 +1,20 @@
 package com.springboot.service.biz;
 
 import com.springboot.Utils.PageInfo;
-import com.springboot.Utils.RestResult;
-import com.springboot.constant.RestResultCodeEnum;
+import com.springboot.constant.RedisHeaderEnum;
 import com.springboot.repository.Dao.UserDao;
 import com.springboot.repository.UserSpecification;
 import com.springboot.repository.entity.UserEntity;
-import com.springboot.service.UserRedisServiceImpl;
-import com.springboot.service.impl.UserService;
+import com.springboot.service.UserHashRedisService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -28,26 +26,30 @@ import java.util.List;
 @Component
 @Transactional
 public class UserBiz{
+
+    final String header = RedisHeaderEnum.USER_CACHE_KEY;
+
     @Autowired
     UserDao userDao;
 
     @Autowired
-    UserRedisServiceImpl userRedisService;
-// 注释缓存
-//    @CacheEvict(value="userCache", allEntries=true)
+    UserHashRedisService userRedisService;
+
+    @Cacheable(value = header, key = "#hello.id")
+    //@Cacheable(value = header, key = "#p0.id")
     public UserEntity save(UserEntity hello) {
         UserEntity result = userDao.save(hello);
-//        userRedisService.put("user_"+ hello.getId(), hello, -1);
-//        UserEntity userEntity = userRedisService.get("user_"+ hello.getId());
+        userRedisService.put(header + hello.getId(), hello, -1);
+        UserEntity userEntity = userRedisService.get(header + hello.getId());
         return result;
     }
-
-//    @CacheEvict(value="userCache", allEntries=true)
+    //allEntries 清空缓存所有属性 确保更新后缓存刷新
+    @CacheEvict(value = header, key = "#p0.id", allEntries=true)
     public UserEntity update(UserEntity hello) {
         return userDao.saveAndFlush(hello);
     }
 
-//    @Cacheable(value="userCache") //缓存,这里没有指定key.
+    @Cacheable(value = header, key="#id") //缓存,这里没有指定key.
     public UserEntity findById(Long id) {
         return userDao.findOne(id);
     }
@@ -56,19 +58,17 @@ public class UserBiz{
         return userDao.findOne(new UserSpecification(UserEntity.builder().account(account).build()));
     }
 
-
-//    @Cacheable(value="userCache")
     public List<UserEntity> list() {
         return userDao.findAll();
     }
 
-    //allEntries 清空缓存所有属性 确保更新后缓存刷新
-//    @CacheEvict(value="userCache", allEntries=true)
+
+    @CacheEvict(value = header, key="#id", allEntries=true)
     public void delete(Long id) {
         userDao.delete(id);
     }
 
-//    @Cacheable(value="userCache", key="#p0+-+#p1")
+    @Cacheable(value = header, key="#p0.pageNumber-#p0.pageSize-#p1")
     public PageInfo<UserEntity> page(PageInfo pageInfo, String userName) {
         List<UserEntity> list = new ArrayList<UserEntity>();
         UserEntity userEntity = new UserEntity();
