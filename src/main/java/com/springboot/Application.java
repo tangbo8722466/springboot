@@ -1,5 +1,6 @@
 package com.springboot;
 
+import com.springboot.filter.EnableTokenFilter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -26,7 +27,8 @@ import java.util.TimeZone;
 //@ComponentScan：会自动扫描指定包下的全部标有@Component的类，并注册成bean，当然包括@Component下的子注解@Service,@Repository,@Controller。
 //@ComponentScan(basePackages={"com.springboot"})
 //@MapperScan()
-
+// 开启token校验
+@EnableTokenFilter
 @EntityScan(basePackages = {"com.springboot.repository.entity"})
 public class Application {
     //    /**
