@@ -1,6 +1,6 @@
 package com.springboot.design.Bridge;
 
-import com.springboot.design.proxy.TrainStation;
+import com.springboot.design.proxy.ITrainStation;
 
 /**
  * @ClassName SaleAbstraction
@@ -10,8 +10,8 @@ import com.springboot.design.proxy.TrainStation;
  * @Version 1.0.0
  **/
 public abstract class SaleAbstraction {
-    public TrainStation trainStation;
-    public SaleAbstraction(TrainStation trainStation) {
+    public ITrainStation trainStation;
+    public SaleAbstraction(ITrainStation trainStation) {
         this.trainStation = trainStation;
     }
 

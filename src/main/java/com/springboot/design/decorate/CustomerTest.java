@@ -1,7 +1,7 @@
 package com.springboot.design.decorate;
 
+import com.springboot.design.proxy.ITrainStation;
 import com.springboot.design.proxy.TrainSaleWindow;
-import com.springboot.design.proxy.TrainStation;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
@@ -16,10 +16,10 @@ import org.junit.Test;
 public class CustomerTest {
     @Test
     public void buyTicket() throws Exception {
-        TrainStation trainStation = new TrainSaleWindow();
+        ITrainStation trainStation = new TrainSaleWindow();
         trainStation.saleTicket(1);
         log.info("购买费用："+trainStation.returnTotalTicketPrice());
-        TrainStation trainStationDecorate = new TicketDecorate(trainStation);
+        ITrainStation trainStationDecorate = new TicketDecorate(trainStation);
         trainStationDecorate.saleTicket(1);
         log.info("购买费用(附加保险)："+trainStationDecorate.returnTotalTicketPrice());
     }

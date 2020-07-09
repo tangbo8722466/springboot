@@ -1,6 +1,6 @@
 package com.springboot.filter;
 
-import com.framework.utils.core.RequestUtil;
+//import com.framework.utils.core.RequestUtil;
 //import com.framework.utils.core.api.ApiConst;
 //import com.framework.utils.core.api.ApiResponse;
 import com.springboot.Utils.RestResult;
@@ -46,7 +46,7 @@ public class TokenFilter implements Filter {
             String token = SpringSessionUtils.getToken();
             log.info("token is [{}]", token);
 
-            RequestUtil.writeJsonToResponseCos(RestResult.buildFailResponse("token失效"), httpServletRequest.getHeader("origin"), httpResponse);
+            //RequestUtil.writeJsonToResponseCos(RestResult.buildFailResponse("token失效"), httpServletRequest.getHeader("origin"), httpResponse);
         } else {
             httpResponse.setStatus(HttpServletResponse.SC_OK);
         }

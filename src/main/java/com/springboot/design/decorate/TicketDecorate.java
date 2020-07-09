@@ -1,6 +1,6 @@
 package com.springboot.design.decorate;
 
-import com.springboot.design.proxy.TrainStation;
+import com.springboot.design.proxy.ITrainStation;
 
 /**
  * @ClassName TicketAbstractDecorate
@@ -16,7 +16,7 @@ public class TicketDecorate extends TicketAbstractDecorate {
 
     private int insuranceTotalFee = 0;
 
-    public TicketDecorate(TrainStation trainStation) {
+    public TicketDecorate(ITrainStation trainStation) {
         super(trainStation);
     }
 

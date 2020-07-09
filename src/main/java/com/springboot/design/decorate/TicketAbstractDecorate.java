@@ -1,6 +1,6 @@
 package com.springboot.design.decorate;
 
-import com.springboot.design.proxy.TrainStation;
+import com.springboot.design.proxy.ITrainStation;
 
 /**
  * @ClassName TicketAbstractDecorate
@@ -9,10 +9,10 @@ import com.springboot.design.proxy.TrainStation;
  * @Date 2020/5/25 9:51
  * @Version 1.0.0
  **/
-public class TicketAbstractDecorate implements TrainStation {
-    private TrainStation trainStation;
+public class TicketAbstractDecorate implements ITrainStation {
+    private ITrainStation trainStation;
 
-    public TicketAbstractDecorate(TrainStation trainStation) {
+    public TicketAbstractDecorate(ITrainStation trainStation) {
         this.trainStation = trainStation;
     }
 

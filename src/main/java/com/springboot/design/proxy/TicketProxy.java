@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
  * @Version 1.0.0
  **/
 @Slf4j
-public class TicketProxy implements TrainStation{
+public class TicketProxy implements ITrainStation {
     /*手续费*/
     private final static int proxyFee = 2;
     private int totalProxyFee = 0;

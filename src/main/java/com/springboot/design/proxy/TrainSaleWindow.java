@@ -7,7 +7,7 @@ package com.springboot.design.proxy;
  * @Date 2020/5/15 15:21
  * @Version 1.0.0
  **/
-public class TrainSaleWindow implements TrainStation{
+public class TrainSaleWindow implements ITrainStation {
 
     private final static int ticketPrice = 5;
 

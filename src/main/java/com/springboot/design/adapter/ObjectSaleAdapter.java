@@ -1,6 +1,6 @@
 package com.springboot.design.adapter;
 
-import com.springboot.design.proxy.TrainStation;
+import com.springboot.design.proxy.ITrainStation;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -12,13 +12,13 @@ import lombok.extern.slf4j.Slf4j;
  **/
 @Slf4j
 public class ObjectSaleAdapter implements ISale{
-    private TrainStation target;
+    private ITrainStation target;
 
     /**
      * 通过构造函数传入适配对象，实现适配
      * @param target
      */
-    public ObjectSaleAdapter(TrainStation target) {
+    public ObjectSaleAdapter(ITrainStation target) {
         log.info("进入对象适配器");
         this.target = target;
     }

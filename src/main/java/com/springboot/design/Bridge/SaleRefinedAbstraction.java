@@ -1,6 +1,6 @@
 package com.springboot.design.Bridge;
 
-import com.springboot.design.proxy.TrainStation;
+import com.springboot.design.proxy.ITrainStation;
 
 /**
  * @ClassName SaleRefinedAbstraction
@@ -11,7 +11,7 @@ import com.springboot.design.proxy.TrainStation;
  **/
 public class SaleRefinedAbstraction extends SaleAbstraction{
 
-    public SaleRefinedAbstraction(TrainStation trainStation) {
+    public SaleRefinedAbstraction(ITrainStation trainStation) {
         super(trainStation);
     }
 
