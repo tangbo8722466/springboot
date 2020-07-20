@@ -6,7 +6,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
 @Component
-@RabbitListener(queues = {"fanout.A", "fanout.B", "fanout.C"})
+//@RabbitListener(queues = {"fanout.A", "fanout.B", "fanout.C"})
 public class FanoutReceiver {
  
     @RabbitHandler

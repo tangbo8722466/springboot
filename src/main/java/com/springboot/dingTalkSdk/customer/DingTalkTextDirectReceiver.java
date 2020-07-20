@@ -20,7 +20,7 @@ import java.util.Map;
 
 @Component
 @Slf4j
-@RabbitListener(queues = {DingTalkDirectConfig.DING_TALK_TEXT})
+//@RabbitListener(queues = {DingTalkDirectConfig.DING_TALK_TEXT})
 public class DingTalkTextDirectReceiver {
 
     @Autowired

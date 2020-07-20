@@ -6,7 +6,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
 @Component
-@RabbitListener(queues = {"apple", "pear"})
+//@RabbitListener(queues = {"apple", "pear"})
 public class DirectReceiver {
  
     @RabbitHandler

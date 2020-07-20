@@ -5,6 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
@@ -29,6 +30,10 @@ import java.util.TimeZone;
 //@MapperScan()
 // 开启token校验
 @EnableTokenFilter
+
+// 如下：@EnableAspectJAutoProxy开启AOP，
+// 而proxyTargetClass = true就是强制使用CGLib
+@EnableAspectJAutoProxy(proxyTargetClass = true)
 @EntityScan(basePackages = {"com.springboot.repository.entity"})
 public class Application {
     //    /**

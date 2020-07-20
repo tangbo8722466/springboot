@@ -29,6 +29,7 @@ public class TokenFilter implements Filter {
         noFilters.add("/*swagger*");
         noFilters.add("/v2/api-docs");
         noFilters.add("/*doc*");
+        noFilters.add("/swagger-resources");
     }
 
     @Override
@@ -50,6 +51,8 @@ public class TokenFilter implements Filter {
         } else {
             httpResponse.setStatus(HttpServletResponse.SC_OK);
         }
+
+        filterChain.doFilter(servletRequest, servletResponse);
     }
 
     @Override
