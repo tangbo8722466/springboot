@@ -1,0 +1,199 @@
+apiVersion: v1
+kind: Service #创建service
+metadata:
+  name: ku8-redis-master
+spec:
+  ports:
+    - port: 6379
+  selector:
+    app: ku8-redis-master #配置标签
+  env:
+    - name: hostname      #service配置的环境变量，会在创建pod时自动注入
+      value: ku8-redis-master
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ku8-redis-master
+  labels:
+    app: ku8-redis-master
+spec:
+  containers:
+    - name: server
+      image: redis
+      ports:
+        - containerPort: 6379
+  restartPolicy: Never
+
+apiVersion: v1
+kind: ReplicationController #创建RC
+metadata:
+  name: ku8-redis-slave
+spec:
+  replicas: 3 #创建POD的副本数
+  template:
+    metadata:
+      labels:
+        app: ku8-redis-slave
+    spec:
+      containers:
+        - name: server
+          image: devopsbq/redis-slave
+          env:
+            - name: MASTER_ADDR
+              value: ku8-redis-master
+          ports:
+            - containerPort: 6379
+
+  apiVersion: v1
+  kind: ReplicationController
+  metadata:
+    name: ku8-redis-slave
+  spec:
+    replicas: 2
+    template:
+      metadata:
+        labels:
+          app: ku8-redis-slave
+      spec:
+        containers:
+          - name: server
+            image: devopsbq/redis-slave
+            env:
+              - name: MASTER_ADDR
+                value: ku8-redis-master
+            ports:
+              - containerPort: 6379
+
+apiVersion: v1
+kind: Service #资源类型为service
+metadata:
+  name: mysql
+spec:
+  ports:
+    - port: 3306 #暴露端口
+  selector:
+    app: mysql_pod #标签名字
+  env:
+    - name: hostname      #service配置的环境变量，会在创建pod时自动注入
+      value: ku8-mysql-master
+
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: mysql-deployment
+spec:
+  replicas: 1 #创建1个副本
+  template:
+    metadata:
+      labels:
+        app: mysql_pod #指定标签名字
+    spec:
+      containers:
+        - name: mysql
+          image: mysql
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: "123456"
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: java-web
+spec:
+  type: NodePort
+  ports:
+    - port: 8080
+      nodePort: 31002
+  selector:
+    app: java_web_pod
+
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: java-web-deployement
+spec:
+  replicas: 1 #
+  template:
+    metadata:
+      labels:
+        app: java_web_pod
+    spec:
+      containers:
+        - name: myweb
+          image: tangbo/service:app-0.1
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+#挂载磁盘
+apiVersion: v1
+kind: Pod        #类型是Pod
+metadata:
+  labels:
+    name: redis
+    role: master        #定义为主redis
+  name: redis-master
+spec:
+  containers:
+    - name: master
+      image: redis:latest
+      env:        #定义环境变量
+        - name: MASTER
+          value: "true"
+      ports:        #容器内端口
+        - containerPort: 6379
+      volumeMounts:        #容器内挂载点
+        - mountPath: /data
+          name: redis-data        #必须有名称
+  volumes:
+    - name: redis-data        #跟上面的名称对应
+      emptyDir: {}        #宿主机挂载点 /var/lib/kubelet/pods/<pod uid>/volumes/kubernetes.io~empty-dir/redis-data
+  volumes:
+    - name: redis-data        #跟上面的名称对应
+      hostPath:
+        path: /data      #宿主机挂载点
+
+#挂载网络磁盘
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nfs-web
+spec:
+  containers:
+    - name: web
+      image: nginx
+      imagePullPolicy: Never        #如果已经有镜像，就不需要再拉取镜像
+      ports:
+        - name: web
+          containerPort: 80
+          hostPort: 80        #将容器的80端口映射到宿主机的80端口
+      volumeMounts:
+        - name : nfs        #指定名称必须与下面一致
+          mountPath: "/usr/share/nginx/html"        #容器内的挂载点
+  volumes:
+    - name: nfs            #指定名称必须与上面一致
+      nfs:            #nfs存储
+        server: 192.168.66.50        #nfs服务器ip或是域名
+        path: "/test"                #nfs服务器共享的目录
+
+
+#指定namespace创建
+#创建namespace
+apiVersion: v1
+  kind: Namespace
+metadata:
+  name: development
+
+#指定namespace创建
+apiVersion: v1
+  kind: Pod
+metadata:
+  name: busybox
+  namespace: development #指定namespace。实现资源隔离
+spec:
+  containers:
+    - image: busybox
+    name: busybox

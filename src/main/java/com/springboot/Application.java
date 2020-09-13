@@ -1,11 +1,16 @@
 package com.springboot;
 
+import com.alibaba.fastjson.JSON;
 import com.springboot.filter.EnableTokenFilter;
+import com.springboot.kafka.cont.Contants;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
@@ -35,7 +40,9 @@ import java.util.TimeZone;
 // 而proxyTargetClass = true就是强制使用CGLib
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 @EntityScan(basePackages = {"com.springboot.repository.entity"})
-public class Application {
+@EnableScheduling
+@EnableAsync
+public class Application implements CommandLineRunner {
     //    /**
 //     * 修改启动类，继承 SpringBootServletInitializer 并重写 configure 方法
 //     *
@@ -56,5 +63,10 @@ public class Application {
     public static void main(String[] args) {
         TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
         SpringApplication.run(Application.class, args);
+    }
+
+    @Override
+    public void run(String... strings) throws Exception {
+        JSON.DEFFAULT_DATE_FORMAT= Contants.DateTimeFormat.DATE_TIME_PATTERN;
     }
 }

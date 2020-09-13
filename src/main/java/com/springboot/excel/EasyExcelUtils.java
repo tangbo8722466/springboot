@@ -38,7 +38,7 @@ public class EasyExcelUtils {
      * @Date 上午12:16 2019/1/31
      */
     public static void createExcelStreamMutilByEaysExcel(HttpServletResponse response, Map<String, List<? extends BaseRowModel>> SheetNameAndDateList, ExcelTypeEnum type,String fileName) throws UnsupportedEncodingException {
-        if (checkParam(SheetNameAndDateList, type)) return;
+        if (checkParam(SheetNameAndDateList, type)) {return;}
         try {
             response.setContentType("multipart/form-data");
             response.setCharacterEncoding("utf-8");
