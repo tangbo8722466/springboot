@@ -13,6 +13,6 @@ public class LogTest {
         logger.warn("shuai2 +++++++++++++++++++++++++++++++++++++warn");
         logger.info("shuai3 +++++++++++++++++++++++++++++++++++++info");
         logger.error("shuai4 +++++++++++++++++++++++++++++++++++++error");
-        loggerBuilder.distoryLogger("test");
+        loggerBuilder.destroyLogger("test");
     }
 }

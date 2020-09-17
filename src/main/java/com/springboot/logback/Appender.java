@@ -26,6 +26,8 @@ public class Appender {
 
     @Value("${spring.logback.path:D://log/}")
     private String springLogbackPath;
+
+    private static final String localLogBackPath="D://log/";
     /**
      * 通过传入的名字和级别，动态设置appender
      *
@@ -34,6 +36,9 @@ public class Appender {
      * @return
      */
     public RollingFileAppender getAppender(String name, Level level) {
+        if (springLogbackPath == null){
+            springLogbackPath = localLogBackPath;
+        }
         DateFormat format = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.SIMPLIFIED_CHINESE);
         LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
         //这里是可以用来设置appender的，在xml配置文件里面，是这种形式：

@@ -41,7 +41,7 @@ public class LoggerBuilder {
      *@参数 日志对象名称
      *@返回值
      */
-    public void distoryLogger(String name) {
+    public void destroyLogger(String name) {
         synchronized (LoggerBuilder.class) {
             container.remove(name);
         }
