@@ -170,7 +170,7 @@ public class RabbitConfig {
         return template;
     }
 
-    @Bean
+//    @Bean
     public SimpleMessageListenerContainer messageContainer(ConnectionFactory connectionFactory) {
         //加载处理消息A的队列
         SimpleMessageListenerContainer container = new SimpleMessageListenerContainer(connectionFactory);
@@ -214,6 +214,7 @@ public class RabbitConfig {
                     else {
                         if (getRetryCount(message.getMessageProperties()) <= 3) {
                             dingTalkBiz.sendTextIntoDelayQueue(message, textRequestVo);
+                            return;
                         }
                     }
                     //deliveryTag:该消息的index

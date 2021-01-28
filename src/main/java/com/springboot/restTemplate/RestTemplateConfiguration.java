@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
@@ -40,6 +41,7 @@ public class RestTemplateConfiguration {
     }
 
     @Bean(name = "restTemplate")
+    @Primary
     public RestTemplate restTemplate(ClientHttpRequestFactory httpFactory) {
         RestTemplate restTemplate = builder
                 .additionalMessageConverters(new WxMappingJackson2HttpMessageConverter())
