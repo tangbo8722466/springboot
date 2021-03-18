@@ -13,6 +13,14 @@
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>1.5.1.RELEASE</version>
     </parent>
+
+    <properties>
+        <base.Encoding>UTF-8</base.Encoding>
+        <java.version>1.8</java.version>
+        <start.class>com.springboot.Application</start.class>
+        <lib.dir.name>lib</lib.dir.name>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -240,15 +248,48 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <!-- 引入本地jar-->
                 <configuration>
-                    <includeSystemScope>true</includeSystemScope>
+                    <fork>true</fork>
+                    <!--设置没有第三方的依赖包-->
+                    <includes>
+                        <include>
+                            <groupId>nothing</groupId>
+                            <artifactId>nothing</artifactId>
+                        </include>
+                    </includes>
                 </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>${start.class}</mainClass>
+                            <classpathPrefix>./${lib.dir.name}</classpathPrefix>
+                            <useUniqueVersions>false</useUniqueVersions>
+                        </manifest>
+                        <manifestEntries>
+                            <!--modbus4j-3.0.4.jar为静态jar，未动态添加到MANIFEST.MF文件中的Class-Path: 中-->
+                            <Class-Path>./ ./lib/</Class-Path>
+                        </manifestEntries>
+                    </archive>
                 </configuration>
             </plugin>
 

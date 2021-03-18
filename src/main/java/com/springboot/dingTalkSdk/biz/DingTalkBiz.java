@@ -45,6 +45,13 @@ public class DingTalkBiz implements RabbitTemplate.ConfirmCallback, RabbitTempla
         try {
             CorrelationData correlationId = new CorrelationData(UUID.randomUUID().toString());
             log.info("Text消费发送id:" + correlationId.getId());
+            //源码内部，默认设置消息为持久化
+            /**
+             * public MessageProperties() {
+             *         this.deliveryMode = DEFAULT_DELIVERY_MODE;
+             *         this.priority = DEFAULT_PRIORITY;
+             *     }
+             */
             rabbitTemplate.convertAndSend(DingTalkDirectConfig.DING_TALK_EXCHANGE, DingTalkDirectConfig.DING_TALK_TEXT, requestVo, correlationId);
         }
         catch(Exception ex){

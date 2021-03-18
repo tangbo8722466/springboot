@@ -146,6 +146,8 @@ public class RabbitConfig {
         当rabbitmq要将队列中的一条消息投递给消费者时，会遍历该队列上的消费者列表，选一个合适的消费者，
         然后将消息投递出去。其中挑选消费者的一个依据就是看消费者对应的channel上未ack的消息数是否达到设置的prefetch_count个数，
         如果未ack的消息数达到了prefetch_count的个数，则不符合要求。当挑选到合适的消费者后，中断后续的遍历。
+        无论消息处理成功还是失败，都必须ack，否则一单unack达到prefetch_count数量，该单个消费者将无法消费
+        unacked的消息在consumer切断连接后(重启)，会自动回到队头
         */
         factory.setPrefetchCount(5);
         // ack，这意味着当你从消息队列取出一个消息时，ack自动发送，mq就会将消息删除。
