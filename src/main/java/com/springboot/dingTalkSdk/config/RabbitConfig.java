@@ -265,7 +265,7 @@ public class RabbitConfig {
         Map<String, Object> arguments = new HashMap<>();
         arguments.put("x-dead-letter-exchange", DingTalkDirectConfig.DING_TALK_EXCHANGE); // DLX，dead letter发送到的exchange
         arguments.put("x-dead-letter-routing-key", DingTalkDirectConfig.DING_TALK_TEXT); // dead letter携带的routing key
-        //arguments.put("x-message-ttl", QUEUE_EXPIRATION); // 设置队列的过期时间，如果消费发送也设置了过期时间，将采用最小的过期时间
+        //arguments.put("x-message-ttl", QUEUE_EXPIRATION); // 设置队列的过期时间，如果消费发送也设置了过期时间，将采用最小的过期时间, 消息过期后将重新推送到指定的队列中
         return new Queue(DingTalkDirectConfig.DING_TALK_DELAY_TEXT,true, false, false, arguments);
     }
 

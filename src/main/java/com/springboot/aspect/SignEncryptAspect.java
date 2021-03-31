@@ -13,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -35,6 +36,12 @@ import java.util.stream.Stream;
 @Slf4j
 public class SignEncryptAspect {
 
+    @Value("${rsa.public.key:1}")
+    private String rsaPublicKey;
+
+    @Value("${rsa.private.key:2}")
+    private String rsaPrivateKey ;
+
     //设置切入点
     @Pointcut("@annotation(com.springboot.aspect.SignEncryptAnno)")
     public void encrypt(){
@@ -54,7 +61,7 @@ public class SignEncryptAspect {
         DataEncryptVo data = (DataEncryptVo) args[0];
         String json = null;
         try {
-            json = dataEncryptBiz.decodeData(data);
+            json = dataEncryptBiz.decodeDataByPrivateKey(data, rsaPrivateKey);
         } catch (Exception e) {
             json = e.getMessage();
             e.printStackTrace();
@@ -97,7 +104,7 @@ public class SignEncryptAspect {
     public DataEncryptVo encrypt(DataEncryptVo dataOrigin) {
         DataEncryptBiz dataEncryptBiz = SpringBeanUtils.getBean(DataEncryptBiz.class);
         try {
-            DataEncryptVo result = dataEncryptBiz.encryptData(dataOrigin.getBody());
+            DataEncryptVo result = dataEncryptBiz.encryptDataByPublicKey(dataOrigin.getBody(), rsaPublicKey);
             return result;
         } catch (Exception e) {
             e.printStackTrace();

@@ -40,6 +40,9 @@ public class DingTalkTextDirectReceiver {
         log.info("队列topic:" + message.getMessageProperties().getReceivedRoutingKey());
         log.info("消息DeliveryTag:" + message.getMessageProperties().getDeliveryTag());
         try {
+            /** Jackson已经满足了大部分的序列化和反序列化工作，但是对于复杂的泛型实体估计未必能如愿的正常反序列，
+             *  而此时对于一些泛型里面的实体对象就会反序列化成LinkedHashMap类型，需要适配
+             */
             OapiRobotSendResponse response = dingTalkBiz.sendText(dingTalkTextUrl, requestVo);
             log.info("请求响应:" + com.alibaba.fastjson.JSONObject.toJSONString(response));
             if (!response.isSuccess()) {
@@ -55,7 +58,7 @@ public class DingTalkTextDirectReceiver {
         } catch (Exception e) {
             e.printStackTrace();
             try {
-                if (message.getMessageProperties().getRedelivered() || (RabbitConfig.getRetryCount(message.getMessageProperties()) <= 3)) {
+                if (message.getMessageProperties().getRedelivered() || (RabbitConfig.getRetryCount(message.getMessageProperties()) > 3)) {
                     log.info("消息已重复处理失败或已重试3次, 拒绝再次接收...");
                     //deliveryTag:该消息的index
                     //requeue：被拒绝的是否重新入队列

@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 
 import org.apache.commons.lang3.StringUtils;
 import sun.misc.BASE64Decoder;
@@ -162,4 +163,9 @@ public class Base64Utils {
         in.close();
     }
 
+    public static void main(String[] args) throws Exception {
+        String encode = encode("test".getBytes());
+        System.out.println(encode);
+        System.out.println(new String(decode(encode), Charset.forName("utf-8")));
+    }
 }

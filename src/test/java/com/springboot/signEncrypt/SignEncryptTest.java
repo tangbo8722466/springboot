@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -39,6 +40,12 @@ public class SignEncryptTest {
     @Qualifier("httpsRestTemplate")
     RestTemplate httpsRestTemplate;
 
+    @Value("${rsa.public.key:1}")
+    private String rsaPublicKey;
+
+    @Value("${rsa.private.key:2}")
+    private String rsaPrivateKey ;
+
     @Autowired
     DataEncryptBiz dataEncryptBiz;
 
@@ -54,11 +61,11 @@ public class SignEncryptTest {
 
         UserCreateVo createVo = UserCreateVo.builder().userName("tangbo").account("tangbo").password("123456").perms("user:add,user:update").remark("测试账号").build();
         try {
-            DataEncryptVo body = dataEncryptBiz.encryptData(JSONObject.toJSONString(createVo));
+            DataEncryptVo body = dataEncryptBiz.encryptDataByPrivateKey(JSONObject.toJSONString(createVo), rsaPublicKey);
             HttpEntity httpEntity = new HttpEntity<>(body, httpHeaders);
             ResponseEntity<DataEncryptVo> responseEntity = httpsRestTemplate.postForEntity("https://localhost:8443/springboot/v1/encrypt/user", httpEntity, DataEncryptVo.class);
             log.info(responseEntity.getStatusCode() + "，" +responseEntity.getStatusCodeValue());
-            log.info(JSONObject.toJSONString(dataEncryptBiz.decodeData(responseEntity.getBody())));
+            log.info(JSONObject.toJSONString(dataEncryptBiz.decodeDataByPublicKey(responseEntity.getBody(),rsaPublicKey)));
         } catch (Exception e) {
             e.printStackTrace();
             return;
