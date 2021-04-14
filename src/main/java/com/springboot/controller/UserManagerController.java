@@ -88,7 +88,7 @@ public class UserManagerController {
             return new RestResult(RestResultCodeEnum.FAIL.code(), "there is no things to update!");
         }
 
-        UserEntity entity = userDao.findOne(id);
+        UserEntity entity = userDao.getOne(id);
         if ( null == entity ) {
             return new RestResult(RestResultCodeEnum.FAIL.code(), "the user entity dose not exits!");
         }

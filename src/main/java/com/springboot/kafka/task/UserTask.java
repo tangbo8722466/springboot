@@ -18,7 +18,7 @@ import java.util.List;
  * @Date: 2019/3/7 00:53
  * @Description: 
  */
-@Component
+//@Component
 public class UserTask {
 
     // @KafkaListener(topics = "queue_performance",groupId = "idbhn_test")

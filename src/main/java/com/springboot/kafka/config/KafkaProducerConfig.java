@@ -18,8 +18,8 @@ import java.util.Map;
  * @Date: 2019/3/6 21:57
  * @Description:
  */
-@Configuration
-@EnableKafka
+//@Configuration
+//@EnableKafka
 public class KafkaProducerConfig {
 
     @Value("${kafka.producer.bootstrap-servers}")

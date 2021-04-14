@@ -13,7 +13,7 @@ import org.springframework.util.concurrent.ListenableFuture;
  * @Date: 2019/3/6 23:46
  * @Description:
  */
-@Component
+//@Component
 @Slf4j
 public class KafkaSender {
 

@@ -7,7 +7,9 @@ import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
+import org.springframework.data.redis.cache.RedisCacheWriter;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.*;
@@ -18,6 +20,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 import redis.clients.jedis.JedisPoolConfig;
 
 import java.io.Serializable;
+import java.time.Duration;
 
 
 /**
@@ -73,14 +76,14 @@ public class RedisCacheConfig {
      * @param redisTemplate
      * @return
      */
-    @Bean
-    public CacheManager cacheManager(@SuppressWarnings("rawtypes") RedisTemplate redisTemplate) {
-        RedisCacheManager cacheManager = new RedisCacheManager(redisTemplate);
-        //设置缓存过期时间，30分钟
-        cacheManager.setDefaultExpiration(60 * 30);
-        cacheManager.setUsePrefix(true);
-        return cacheManager;
-    }
+//    @Bean
+//    public CacheManager cacheManager(@SuppressWarnings("rawtypes") RedisTemplate redisTemplate) {
+//        RedisCacheManager cacheManager = new RedisCacheManager(redisTemplate);
+//        //设置缓存过期时间，30分钟
+//        cacheManager.setDefaultExpiration(60 * 30);
+//        cacheManager.setUsePrefix(true);
+//        return cacheManager;
+//    }
 
 
     /**
@@ -90,14 +93,14 @@ public class RedisCacheConfig {
      * @param redisConnectionFactory
      * @return
      */
-//    @Bean
-//    public CacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
-//        RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
-//                .entryTtl(Duration.ofHours(24)); // 设置缓存有效期24小时
-//        return RedisCacheManager
-//                .builder(RedisCacheWriter.nonLockingRedisCacheWriter(redisConnectionFactory))
-//                .cacheDefaults(redisCacheConfiguration).build();
-//    }
+    @Bean
+    public CacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
+        RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
+                .entryTtl(Duration.ofHours(24)); // 设置缓存有效期24小时
+        return RedisCacheManager
+                .builder(RedisCacheWriter.nonLockingRedisCacheWriter(redisConnectionFactory))
+                .cacheDefaults(redisCacheConfiguration).build();
+    }
 
     /**
      * 实例化 HashOperations 对象,可以使用 Hash 类型操作

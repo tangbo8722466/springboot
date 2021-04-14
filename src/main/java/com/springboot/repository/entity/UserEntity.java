@@ -16,7 +16,7 @@ import java.util.Date;
 @AllArgsConstructor
 public class UserEntity implements Serializable{
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "account", length = 16, nullable = false)

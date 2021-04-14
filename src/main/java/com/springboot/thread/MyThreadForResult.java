@@ -1,6 +1,5 @@
 package com.springboot.thread;
 
-import groovy.transform.ThreadInterrupt;
 import lombok.extern.log4j.Log4j;
 
 import java.util.concurrent.Callable;

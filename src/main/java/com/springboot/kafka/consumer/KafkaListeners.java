@@ -19,10 +19,10 @@ import java.util.List;
  * @Description:
  */
 @Slf4j
-@Component
+//@Component
 public class KafkaListeners {
 
-    @KafkaListener(containerFactory = "kafkaBatchListener6",topics = {"#{'${kafka.listener.topics}'.split(',')[0]}"}, group = "${kafka.listener.group}")
+    @KafkaListener(containerFactory = "kafkaBatchListener6",topics = {"#{'${kafka.listener.topics}'.split(',')[0]}"}, groupId = "${kafka.listener.group}")
     public void batchListener(List<ConsumerRecord<?,?>> records, Acknowledgment ack){
 
         List<User> userList = new ArrayList<>();

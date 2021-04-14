@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
  * Created by tangbo on 2018/3/13 0013.
  */
 @Component
-@PropertySource("classpath:config/userdefine.properties")
+//@PropertySource("classpath:config/userdefine.properties")
 @ConfigurationProperties(prefix = "userdefine")
 public class UserDefine {
     private String name;

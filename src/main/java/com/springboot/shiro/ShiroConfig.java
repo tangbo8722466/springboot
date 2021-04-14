@@ -22,7 +22,7 @@ import org.springframework.context.annotation.DependsOn;
  * @author lenovo
  *
  */
-@Configuration
+//@Configuration
 public class ShiroConfig {
 
     /**

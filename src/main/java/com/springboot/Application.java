@@ -1,6 +1,7 @@
 package com.springboot;
 
 import com.alibaba.fastjson.JSON;
+import com.ctrip.framework.apollo.spring.annotation.EnableApolloConfig;
 import com.springboot.filter.EnableTokenFilter;
 import com.springboot.kafka.cont.Contants;
 import org.springframework.boot.CommandLineRunner;

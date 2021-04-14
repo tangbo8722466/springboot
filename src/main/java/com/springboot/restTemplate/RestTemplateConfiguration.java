@@ -1,5 +1,7 @@
 package com.springboot.restTemplate;
 
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
@@ -7,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.ClientHttpRequestFactory;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -15,6 +18,7 @@ import org.springframework.web.client.RestTemplate;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * @author tangbo
@@ -25,27 +29,44 @@ import java.util.List;
  */
 @Configuration
 public class RestTemplateConfiguration {
-    @Autowired
-    private RestTemplateBuilder builder;
+
+    @Bean("restTemplateBuilder")
+    public RestTemplateBuilder restTemplateBuilder() {
+        return new RestTemplateBuilder();
+    }
 
     /**
-     * 设置超时时间
+     * 设置超时时间 适用1.5 作废
      * @return
      */
-    @Bean("httpFactory")
-    public ClientHttpRequestFactory simpleClientHttpRequestFactory() {
-        SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
-        factory.setConnectTimeout(15000);
-        factory.setReadTimeout(5000);
-        return factory;
+//    @Bean("httpFactory")
+//    public ClientHttpRequestFactory simpleClientHttpRequestFactory() {
+//        SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
+//        factory.setConnectTimeout(15000);
+//        factory.setReadTimeout(5000);
+//        return factory;
+//    }
+
+    @Bean("httpFactorySupplier")
+    Supplier<ClientHttpRequestFactory> httpFactorySupplier() {
+        return () -> {
+            HttpClientBuilder clientBuilder = HttpClientBuilder.create();
+            HttpClient httpClient = clientBuilder.build();
+            HttpComponentsClientHttpRequestFactory requestFactory =
+                    new HttpComponentsClientHttpRequestFactory(httpClient);
+            requestFactory.setConnectTimeout(15000);
+            requestFactory.setReadTimeout(5000);
+            requestFactory.setBufferRequestBody(false);
+            return requestFactory;
+        };
     }
 
     @Bean(name = "restTemplate")
     @Primary
-    public RestTemplate restTemplate(ClientHttpRequestFactory httpFactory) {
-        RestTemplate restTemplate = builder
+    public RestTemplate restTemplate(Supplier<ClientHttpRequestFactory> httpFactorySupplier, RestTemplateBuilder restTemplateBuilder) {
+        RestTemplate restTemplate = restTemplateBuilder
                 .additionalMessageConverters(new WxMappingJackson2HttpMessageConverter())
-                .requestFactory(httpFactory)
+                .requestFactory(httpFactorySupplier)
                 .build();
         //设置请求字符为utf-8
         restTemplate.getMessageConverters().forEach(httpMessageConverter -> {
@@ -70,20 +91,38 @@ public class RestTemplateConfiguration {
             setSupportedMediaTypes(mediaTypes);// tag6
         }
     }
-    @Bean(name = "httpsFactory")
-    public ClientHttpRequestFactory simpleClientHttpsRequestFactory() {
-        SimpleClientHttpRequestFactory factory = new SSLClientHttpRequestFactory();
-        factory.setConnectTimeout(15000);
-        factory.setReadTimeout(300000);
-        return factory;
+
+    /**
+     适用1.5 作废
+     */
+//    @Bean(name = "httpsFactory")
+//    public ClientHttpRequestFactory simpleClientHttpsRequestFactory() {
+//        SimpleClientHttpRequestFactory factory = new SSLClientHttpRequestFactory();
+//        factory.setConnectTimeout(15000);
+//        factory.setReadTimeout(300000);
+//        return factory;
+//    }
+
+    @Bean("httpsFactorySupplier")
+    Supplier<ClientHttpRequestFactory> httpsFactorySupplier() {
+        return () -> {
+            HttpClientBuilder clientBuilder = HttpClientBuilder.create();
+            HttpClient httpClient = clientBuilder.build();
+            HttpComponentsClientHttpRequestFactory requestFactory =
+                    new HttpComponentsClientHttpRequestFactory(httpClient);
+            requestFactory.setConnectTimeout(15000);
+            requestFactory.setReadTimeout(5000);
+            requestFactory.setBufferRequestBody(false);
+            return requestFactory;
+        };
     }
 
 
     @Bean(name = "httpsRestTemplate")
-    public RestTemplate httpsRestTemplate(ClientHttpRequestFactory httpsFactory){
-        RestTemplate restTemplate = builder
+    public RestTemplate httpsRestTemplate(Supplier<ClientHttpRequestFactory> httpsFactorySupplier, RestTemplateBuilder restTemplateBuilder){
+        RestTemplate restTemplate = restTemplateBuilder
                 .additionalMessageConverters(new WxMappingJackson2HttpMessageConverter())
-                .requestFactory(httpsFactory)
+                .requestFactory(httpsFactorySupplier)
                 .build();
         //设置请求字符为utf-8
         restTemplate.getMessageConverters().forEach(httpMessageConverter -> {

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 // 不能使用@RestController，会将所有响应加上ResponseBody
-@Controller
+//@Controller
 public class ShiroController {
 
     @RequiresRoles(value = {"admin", "user"}, logical = Logical.OR)

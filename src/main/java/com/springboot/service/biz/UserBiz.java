@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by tangbo on 2018/1/30 0030.
@@ -51,11 +52,12 @@ public class UserBiz{
 
     @Cacheable(value = header, key="#id") //缓存,这里没有指定key.
     public UserEntity findById(Long id) {
-        return userDao.findOne(id);
+        return userDao.getOne(id);
     }
 
     public UserEntity findOneByAccount(String account) {
-        return userDao.findOne(new UserSpecification(UserEntity.builder().account(account).build()));
+        Optional<UserEntity> optionalUserEntity = userDao.findOne(new UserSpecification(UserEntity.builder().account(account).build()));
+        return optionalUserEntity.get();
     }
 
     public List<UserEntity> list() {
@@ -65,7 +67,7 @@ public class UserBiz{
 
     @CacheEvict(value = header, key="#id", allEntries=true)
     public void delete(Long id) {
-        userDao.delete(id);
+        userDao.deleteById(id);
     }
 
     @Cacheable(value = header, key="#p0.pageNumber-#p0.pageSize-#p1")

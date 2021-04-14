@@ -76,30 +76,30 @@ public class RSATester {
      * 测试自己封装java端加密和解密的方法
      */
 
-    static void testJavaRsa() {
-        String PUBLICKEY = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCw9D5cEu39diXUoSCQIf3MU5XHTHNzO2zKlHiR\n" +
-                "Nl6Y5weLpaEdzX14KKF+9NnJXELQDa33Htc178etYbck2MGV/o0T8Fivb9yjBvtWprLZjV7Mqyu5\n" +
-                "2fHRmGRYMQ/g4nTUwcoeob919iUk+4tqXGnj/kePoItkgCHFgxUlGIusyQIDAQAB";
-        String PRIVATEKEY = "MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBALD0PlwS7f12JdShIJAh/cxTlcdM\n" +
-                "c3M7bMqUeJE2XpjnB4uloR3NfXgooX702clcQtANrfce1zXvx61htyTYwZX+jRPwWK9v3KMG+1am\n" +
-                "stmNXsyrK7nZ8dGYZFgxD+DidNTByh6hv3X2JST7i2pcaeP+R4+gi2SAIcWDFSUYi6zJAgMBAAEC\n" +
-                "gYBzAlvhdgAuY3LVDuBeLWmKOq03em3y8CWWSQdPwhmboVSbI8xi1WL+DNJh9Hv0Tr2yAaIW4nmX\n" +
-                "ub965e6lySeP48hl0SbquCKnETkst4UCdMHMv9hBaLTuvK/JbBodXQFKNgCvXpmMrR+yArP44346\n" +
-                "UacIW1ESmY0SScKRUPSCvQJBANkNwE8h0yArOPP9yXNswt2WarPI8/UuJpl19Om1HR4sekI6glSy\n" +
-                "SvOL/XMxJ/0d74bD3+F6D2G495AvHFL1r08CQQDQtIlVKHw3MAioRImDDa2STTuYEls+pKvVYVkn\n" +
-                "AtDyNr+nBh2IytInIaMJpdnGmPajIKbwgRERmQxpqjipwpxnAkBjECKgOyjXusJgoYjK9G2vopIK\n" +
-                "ggHN+gVF7w8bhzzF47jc90U6kLEinNbNNzcwD/SdRlKs3v+cM0ZR+R5tQpKDAkBzQ7IxUQnBZQry\n" +
-                "+99CfPRmv7bxFvpDz6iDUZ9uVzTVAP26HjuDiBimugIUWv+6mlJk56yrWWz23iMn3HYs86lzAkEA\n" +
-                "m37xhtWa4a761JqrV5x3pbznBP1SxToLa1c5JEpfD2TzQ0YapO7iS9cpLm60SHmCc/9GqsaWvW01\n" +
-                "CKEkOSonog==";
+     static void testJavaRsa() {
+//        String PUBLICKEY = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCw9D5cEu39diXUoSCQIf3MU5XHTHNzO2zKlHiR\n" +
+//                "Nl6Y5weLpaEdzX14KKF+9NnJXELQDa33Htc178etYbck2MGV/o0T8Fivb9yjBvtWprLZjV7Mqyu5\n" +
+//                "2fHRmGRYMQ/g4nTUwcoeob919iUk+4tqXGnj/kePoItkgCHFgxUlGIusyQIDAQAB";
+//        String PRIVATEKEY = "MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBALD0PlwS7f12JdShIJAh/cxTlcdM\n" +
+//                "c3M7bMqUeJE2XpjnB4uloR3NfXgooX702clcQtANrfce1zXvx61htyTYwZX+jRPwWK9v3KMG+1am\n" +
+//                "stmNXsyrK7nZ8dGYZFgxD+DidNTByh6hv3X2JST7i2pcaeP+R4+gi2SAIcWDFSUYi6zJAgMBAAEC\n" +
+//                "gYBzAlvhdgAuY3LVDuBeLWmKOq03em3y8CWWSQdPwhmboVSbI8xi1WL+DNJh9Hv0Tr2yAaIW4nmX\n" +
+//                "ub965e6lySeP48hl0SbquCKnETkst4UCdMHMv9hBaLTuvK/JbBodXQFKNgCvXpmMrR+yArP44346\n" +
+//                "UacIW1ESmY0SScKRUPSCvQJBANkNwE8h0yArOPP9yXNswt2WarPI8/UuJpl19Om1HR4sekI6glSy\n" +
+//                "SvOL/XMxJ/0d74bD3+F6D2G495AvHFL1r08CQQDQtIlVKHw3MAioRImDDa2STTuYEls+pKvVYVkn\n" +
+//                "AtDyNr+nBh2IytInIaMJpdnGmPajIKbwgRERmQxpqjipwpxnAkBjECKgOyjXusJgoYjK9G2vopIK\n" +
+//                "ggHN+gVF7w8bhzzF47jc90U6kLEinNbNNzcwD/SdRlKs3v+cM0ZR+R5tQpKDAkBzQ7IxUQnBZQry\n" +
+//                "+99CfPRmv7bxFvpDz6iDUZ9uVzTVAP26HjuDiBimugIUWv+6mlJk56yrWWz23iMn3HYs86lzAkEA\n" +
+//                "m37xhtWa4a761JqrV5x3pbznBP1SxToLa1c5JEpfD2TzQ0YapO7iS9cpLm60SHmCc/9GqsaWvW01\n" +
+//                "CKEkOSonog==";
         try {
             //Map<String, Object> keyPair = RSAUtils.genKeyPair();
 //            String PUBLICKEY = RSAUtils.getPublicKey(keyPair);
 //            String  PRIVATEKEY = RSAUtils.getPrivateKey(keyPair);
             String data = "admin123";
-            data = RSAUtils.encryptedDataOnJava(data, PUBLICKEY);
+            data = RSAUtils.encryptedDataOnJava(data, publicKey);
             System.out.println("加密数据：" + data);
-            System.out.println("解密数据：" + RSAUtils.decryptDataOnJava(data, PRIVATEKEY));
+            System.out.println("解密数据：" + RSAUtils.decryptDataOnJava(data, privateKey));
         } catch (Exception e) {
             e.printStackTrace();
         }
