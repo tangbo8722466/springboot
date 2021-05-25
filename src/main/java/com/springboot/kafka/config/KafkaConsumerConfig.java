@@ -1,7 +1,9 @@
 package com.springboot.kafka.config;
 
+import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.consumer.*;
+import org.apache.kafka.common.TopicPartition;
 import org.springframework.beans.factory.annotation.Value;
-import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -15,6 +17,10 @@ import org.springframework.kafka.listener.AbstractMessageListenerContainer;
 import org.springframework.kafka.listener.ConcurrentMessageListenerContainer;
 import org.springframework.kafka.listener.ContainerProperties;
 
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,6 +31,7 @@ import java.util.Map;
  */
 //@Configuration
 //@EnableKafka
+@Slf4j
 public class KafkaConsumerConfig {
 
     @Value("${kafka.consumer.bootstrap-servers}")
@@ -111,6 +118,69 @@ public class KafkaConsumerConfig {
         return new DefaultKafkaConsumerFactory<>(consumerConfigs());
     }
 
+    /**
+     * 使用Consumer进行消费
+     * 偏移量提交的三种方式
+     * 1.指定偏移量提交
+     * 2.同步提交
+     * 3.异步提交
+     */
+    public void consumerHandler() {
+        String topic = "springboot";
+        ConsumerFactory factory = new DefaultKafkaConsumerFactory<>(consumerConfigs());
+        Consumer<String, String> consumer = factory.createConsumer();
+
+        // 消息订阅
+        // consumer.subscribe(Collections.singletonList(topic));
+        // 可以订阅多个主题
+        // consumer.subscribe(Arrays.asList(topic, topic2));
+        // 可以使用正则表达式进行订阅
+        // consumer.subscribe(Pattern.compile("topic-demo*"));
+
+        // 指定订阅的分区
+        TopicPartition topicPartition = new TopicPartition(topic, 0);
+        consumer.assign(Arrays.asList(topicPartition));
+        // 初始化offset位移为-1
+        long lastConsumeOffset = -1;
+
+        Map<TopicPartition, OffsetAndMetadata> currentOffsets = new HashMap<>();
+
+        while (true) {
+            ConsumerRecords<String, String> records = consumer.poll(Duration.of(5, ChronoUnit.MINUTES));
+            int count = 0;
+            for (ConsumerRecord<String, String> record : records) {
+                //模拟对消息的处理
+                log.info("topic = %s, partition = %s, offset = %d, customer = %s, country = %s\n", record.topic(),
+                        record.partition(), record.offset(), record.key(),
+                        record.value());
+                //* 1.指定偏移量提交
+                //在读取每条消息后，使用期望处理的下一个消息的偏移量更新map里的偏移量。下一次就从这里开始读取消息
+                currentOffsets.put(new TopicPartition(record.topic(), record.partition()), new OffsetAndMetadata(record.offset() + 1, "no matadata"));
+                if (count++ % 1000 == 0) {
+                    //每处理1000条消息就提交一次偏移量，在实际应用中，可以根据时间或者消息的内容进行提交
+                    consumer.commitAsync(currentOffsets, null);
+                }
+            }
+            // * 2.同步提交
+            try {
+                consumer.commitSync();//处理完当前批次的消息，在轮询更多的消息之前，调用commitSync方法提交当前批次最新的消息
+            } catch (CommitFailedException e) {
+                log.error("commit failed", e);//只要没有发生不可恢复的错误，commitSync方法会一直尝试直至提交成功。如果提交失败，我们也只能把异常记录到错误日志里
+            }
+
+            // * 3.异步提交
+            try {
+                consumer.commitAsync();//如果一切正常，我们使用commitAsync来提交，这样速度更快，而且即使这次提交失败，下次提交很可能会成功
+            } catch (CommitFailedException e) {
+                log.error("commit failed", e);
+            } finally{
+                consumer.commitSync();//使用commitSync，直到提交成成功或者发生无法恢复的错误
+            }
+        }
+    }
+
+
+
     private Map<String, Object> consumerConfigs() {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "springboot");
@@ -125,8 +195,8 @@ public class KafkaConsumerConfig {
         // 设置每次接收Message的数量 （默认500）
         props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, maxPollRecords);
 
-        // 开启自动提交偏移量
-        props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, true);
+        // 是否开启自动提交偏移量，使用手动提交偏移量
+        props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
         // 自动提交偏移量时间间隔
         props.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, autoCommitInterval);
 
@@ -136,7 +206,6 @@ public class KafkaConsumerConfig {
         props.put(ConsumerConfig.HEARTBEAT_INTERVAL_MS_CONFIG, 3000);
 
         props.put(ConsumerConfig.REQUEST_TIMEOUT_MS_CONFIG, 180000);
-        // max.poll.interval.ms决定了获取消息后提交偏移量的最大时间
 
         props.put(ConsumerConfig.MAX_PARTITION_FETCH_BYTES_CONFIG, maxPartitionFetchBytes);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);

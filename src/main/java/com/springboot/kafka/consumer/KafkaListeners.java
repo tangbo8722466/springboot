@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.springboot.kafka.cont.Contants;
 import com.springboot.kafka.vo.User;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
