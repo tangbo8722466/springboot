@@ -30,4 +30,7 @@ public class DataEncryptVo {
     @NotNull
     private String body;
 
+    @ApiModelProperty(value = "解密后的JSON内容", hidden = true)
+    private String data;
+
 }

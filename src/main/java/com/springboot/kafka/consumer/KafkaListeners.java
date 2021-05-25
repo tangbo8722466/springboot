@@ -22,7 +22,7 @@ import java.util.List;
 //@Component
 public class KafkaListeners {
 
-    @KafkaListener(containerFactory = "kafkaBatchListener6",topics = {"#{'${kafka.listener.topics}'.split(',')[0]}"}, groupId = "${kafka.listener.group}")
+    @KafkaListener(containerFactory = "kafkaBatchListener6",topics = {"#{'${kafka.listener.topics}'.split(',')[0]}"}, groupId = "${kafka.listener.group}", concurrency = "1")
     public void batchListener(List<ConsumerRecord<?,?>> records, Acknowledgment ack){
 
         List<User> userList = new ArrayList<>();

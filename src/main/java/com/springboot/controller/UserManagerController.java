@@ -71,10 +71,12 @@ public class UserManagerController {
     @RequestMapping(value = "/encrypt/user",  method = RequestMethod.POST)
     @SignEncryptAnno
     DataEncryptVo create(@Valid @RequestBody DataEncryptVo dataEncryptVo) {
-        if (!encryptObjectRedisService.isKeyExists(dataEncryptVo.getSkey())) {
+        if (//!encryptObjectRedisService.isKeyExists(dataEncryptVo.getSkey()) 屏蔽Redis
+        StringUtils.isEmpty(dataEncryptVo.getData())) {
             return DataEncryptVo.builder().body(JSONObject.toJSONString(RestResult.buildFailResponse("验签失败"))).build();
         }
-        String data = encryptObjectRedisService.get(dataEncryptVo.getSkey());
+        //String data = encryptObjectRedisService.get(dataEncryptVo.getSkey());
+        String data = dataEncryptVo.getData();
         if ("验签失败".equalsIgnoreCase(data)) {
             return DataEncryptVo.builder().body(JSONObject.toJSONString(RestResult.buildFailResponse(data))).build();
         }

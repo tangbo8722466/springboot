@@ -1,28 +1,17 @@
 package com.springboot.aspect;
 
-import com.springboot.Utils.DataEncryptUtils;
-import com.springboot.Utils.PageInfo;
-import com.springboot.Utils.RestResult;
 import com.springboot.Utils.SpringBeanUtils;
 import com.springboot.Vo.request.DataEncryptVo;
-import com.springboot.constant.RestResultCodeEnum;
 import com.springboot.service.EncryptObjectRedisService;
 import com.springboot.service.biz.DataEncryptBiz;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * @ClassName DataencryptAspect
@@ -53,9 +42,30 @@ public class SignEncryptAspect {
      * @param joinPoint
      * @return
      */
-    @Before("encrypt()")
-    public void proceed(JoinPoint joinPoint){
-        Object[] args = joinPoint.getArgs();  //获取目标方法的入参
+//    @Before("encrypt()")
+//    public void proceed(JoinPoint joinPoint){
+//        Object[] args = joinPoint.getArgs();  //获取目标方法的入参
+//        DataEncryptBiz dataEncryptBiz = SpringBeanUtils.getBean(DataEncryptBiz.class);
+//        EncryptObjectRedisService encryptObjectRedisService = SpringBeanUtils.getBean(EncryptObjectRedisService.class);
+//        DataEncryptVo data = (DataEncryptVo) args[0];
+//        String json = null;
+//        try {
+//            json = dataEncryptBiz.decodeDataByPrivateKey(data, rsaPrivateKey);
+//        } catch (Exception e) {
+//            json = e.getMessage();
+//            e.printStackTrace();
+//        }
+//        encryptObjectRedisService.set(data.getSkey(), json, 30);
+//    }
+
+    /**
+     * @param joinPoint
+     * @return
+     */
+    @Around("encrypt()")
+    public Object proceed(ProceedingJoinPoint joinPoint) throws Throwable{
+        //获取目标方法的入参
+        Object[] args = joinPoint.getArgs();
         DataEncryptBiz dataEncryptBiz = SpringBeanUtils.getBean(DataEncryptBiz.class);
         EncryptObjectRedisService encryptObjectRedisService = SpringBeanUtils.getBean(EncryptObjectRedisService.class);
         DataEncryptVo data = (DataEncryptVo) args[0];
@@ -67,6 +77,11 @@ public class SignEncryptAspect {
             e.printStackTrace();
         }
         encryptObjectRedisService.set(data.getSkey(), json, 30);
+        data.setData(json);
+        args[0] = data;
+        //执行目标方法
+        Object result = joinPoint.proceed(args);
+        return result;
     }
 
     @AfterReturning(pointcut = "encrypt()", returning = "obj")
